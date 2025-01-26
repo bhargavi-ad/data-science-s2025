@@ -1,7 +1,7 @@
 ---
 title: "Getting Started: Diamonds"
-author: "(Your name here)"
-date: 2020-
+author: "Bhargavi Deshpande"
+date: 01/26/2025
 output:
   github_document:
     toc: true
@@ -54,23 +54,25 @@ In this first stage, you will explore the `diamonds` dataset and document your o
 
 ```{r q1-task}
 ## TASK: Plot `price` vs `carat` below
-## Your code here!
+ggplot(diamonds) +
+  geom_point(aes(x = carat, y = price))
 ```
 
 **Observations**:
 
-- (Write your observations here!)
+- The price of the diamond general increases with the cost; however there is some spread along the data so it isn't exactly related in that way.
 
 ### __q2__ Create a visualization showing variables `carat`, `price`, and `cut` simultaneously. Experiment with which variable you assign to which aesthetic (`x`, `y`, etc.) to find an effective visual.
 
 ```{r q2-task}
 ## TASK: Plot `price`, `carat`, and `cut` below
-## Your code here!
+ggplot(diamonds) +
+  geom_point(aes(x = carat, y = price, color = cut))
 ```
 
 **Observations**:
 
-- (Write your observations here!)
+- When the cut of the diamond is more ideal it is generally the more expensive. As the carat increases and the cost increases there is a slight trend in the cut becoming more ideal. However, there is still spread on this and it is not a direct relationship. 
 
 
 # Communication
