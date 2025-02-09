@@ -1,30 +1,42 @@
 ---
 title: "Michelson Speed-of-light Measurements"
-author: "(Your name here)"
-date: 2020-
+author: "Bhargavi Deshpande"
+date: 02/03/2025
 output: 
   github_document:
     toc: true
 prerequisites:
   - e-data02-derive
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
-*Purpose*: When studying physical problems, there is an important distinction between *error* and *uncertainty*. The primary purpose of this challenge is to dip our toes into these factors by analyzing a real dataset.
+*Purpose*: When studying physical problems, there is an important
+distinction between *error* and *uncertainty*. The primary purpose of
+this challenge is to dip our toes into these factors by analyzing a real
+dataset.
 
-*Reading*: [Experimental Determination of the Velocity of Light](https://play.google.com/books/reader?id=343nAAAAMAAJ&hl=en&pg=GBS.PA115) (Optional)
+*Reading*: [Experimental Determination of the Velocity of
+Light](https://play.google.com/books/reader?id=343nAAAAMAAJ&hl=en&pg=GBS.PA115)
+(Optional)
 
 <!-- include-rubric -->
+
 # Grading Rubric
+
 <!-- -------------------------------------------------- -->
 
-Unlike exercises, **challenges will be graded**. The following rubrics define how you will be graded, both on an individual and team basis.
+Unlike exercises, **challenges will be graded**. The following rubrics
+define how you will be graded, both on an individual and team basis.
 
 ## Individual
+
 <!-- ------------------------- -->
 
 | Category | Needs Improvement | Satisfactory |
-|----------|----------------|--------------|
-| Effort | Some task __q__'s left unattempted | All task __q__'s attempted |
+|------------------------|------------------------|------------------------|
+| Effort | Some task **q**'s left unattempted | All task **q**'s attempted |
 | Observed | Did not document observations, or observations incorrect | Documented correct observations based on analysis |
 | Supported | Some observations not clearly supported by analysis | All observations clearly supported by analysis (table, graph, etc.) |
 | Assessed | Observations include claims not supported by the data, or reflect a level of certainty not warranted by the data | Observations are appropriately qualified by the quality & relevance of the data and (in)conclusiveness of the support |
@@ -32,10 +44,13 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 | Code Styled | Violations of the [style guide](https://style.tidyverse.org/) hinder readability | Code sufficiently close to the [style guide](https://style.tidyverse.org/) |
 
 ## Submission
+
 <!-- ------------------------- -->
 
-Make sure to commit both the challenge report (`report.md` file) and supporting files (`report_files/` folder) when you are done! Then submit a link to Canvas. **Your Challenge submission is not complete without all files uploaded to GitHub.**
-
+Make sure to commit both the challenge report (`report.md` file) and
+supporting files (`report_files/` folder) when you are done! Then submit
+a link to Canvas. **Your Challenge submission is not complete without
+all files uploaded to GitHub.**
 
 ```{r message=FALSE, warning=FALSE}
 # Libraries
@@ -50,11 +65,21 @@ LIGHTSPEED_MICHELSON <- 299944.00  # Michelson's speed estimate (km / s)
 LIGHTSPEED_PM        <- 51         # Michelson error estimate (km / s)
 ```
 
-*Background*: In 1879 Albert Michelson led an experimental campaign to measure the speed of light. His approach was a development upon the method of Foucault[3], and resulted in a new estimate of $v_0 = 299944 \pm 51$ kilometers per second (in a vacuum). This is very close to the modern *exact* value of `r LIGHTSPEED_VACUUM`. In this challenge, you will analyze Michelson's original data, and explore some of the factors associated with his experiment.
+*Background*: In 1879 Albert Michelson led an experimental campaign to
+measure the speed of light. His approach was a development upon the
+method of Foucault[3], and resulted in a new estimate of
+$v_0 = 299944 \pm 51$ kilometers per second (in a vacuum). This is very
+close to the modern *exact* value of `r LIGHTSPEED_VACUUM`. In this
+challenge, you will analyze Michelson's original data, and explore some
+of the factors associated with his experiment.
 
-I've already copied Michelson's data from his 1880 publication; the code chunk below will load these data from a public googlesheet.
+I've already copied Michelson's data from his 1880 publication; the code
+chunk below will load these data from a public googlesheet.
 
-*Aside*: The speed of light is *exact* (there is **zero error** in the value `LIGHTSPEED_VACUUM`) because the meter is actually [*defined*](https://en.wikipedia.org/wiki/Metre#Speed_of_light_definition) in terms of the speed of light!
+*Aside*: The speed of light is *exact* (there is **zero error** in the
+value `LIGHTSPEED_VACUUM`) because the meter is actually
+[*defined*](https://en.wikipedia.org/wiki/Metre#Speed_of_light_definition)
+in terms of the speed of light!
 
 ```{r read-sheet}
 ## Note: No need to edit this chunk!
@@ -70,84 +95,114 @@ df_michelson %>% glimpse()
 
 *Data dictionary*:
 
-- `Date`: Date of measurement
-- `Distinctness`: Distinctness of measured images: 3 = good, 2 = fair, 1 = poor
-- `Temp`: Ambient temperature (Fahrenheit)
-- `Velocity`: Measured speed of light (km / s)
+-   `Date`: Date of measurement
+-   `Distinctness`: Distinctness of measured images: 3 = good, 2 = fair,
+    1 = poor
+-   `Temp`: Ambient temperature (Fahrenheit)
+-   `Velocity`: Measured speed of light (km / s)
 
-### __q1__ Re-create the following table (from Michelson (1880), pg. 139) using `df_michelson` and `dplyr`. Note that your values *will not* match those of Michelson *exactly*; why might this be?
+### **q1** Re-create the following table (from Michelson (1880), pg. 139) using `df_michelson` and `dplyr`. Note that your values *will not* match those of Michelson *exactly*; why might this be?
 
-| Distinctness | n  | MeanVelocity |
-|--------------|----|----------|
-|            3 | 46 |   299860 |
-|            2 | 39 |   299860 |
-|            1 | 15 |   299810 |
+| Distinctness | n   | MeanVelocity |
+|--------------|-----|--------------|
+| 3            | 46  | 299860       |
+| 2            | 39  | 299860       |
+| 1            | 15  | 299810       |
 
 ```{r q1-task}
 ## TODO: Compute summaries
-df_q1 <- NA
+df_q1<-
+  df_michelson %>%
+  group_by(Distinctness) %>%
+  summarize(n=n(), MeanVelocity = mean(Velocity))
+  
+  
+  
+
+
 df_q1 %>%
   arrange(desc(Distinctness)) %>%
   knitr::kable()
 ```
 
-**Observations**:
-- Write your observations here!
-  - (Your response here)
-- Why might your table differ from Michelson's?
-  - (Your response here)
+**Observations**: - Write your observations here! - My table differs
+from Michelson most likely because of rounding errors. Michelson's table
+doesn't have any decimal values or values ending in a number that is not
+zero. If I were to round the mean velocity values I got, they would
+round and match the Michelson table exactly.
 
-The `Velocity` values in the dataset are the speed of light *in air*; Michelson
-introduced a couple of adjustments to estimate the speed of light in a vacuum.
-In total, he added $+92$ km/s to his mean estimate for `VelocityVacuum` (from
-Michelson (1880), pg. 141). While the following isn't fully rigorous ($+92$ km/s
-is based on the mean temperature), we'll simply apply this correction to all the
-observations in the dataset.
+The `Velocity` values in the dataset are the speed of light *in air*;
+Michelson introduced a couple of adjustments to estimate the speed of
+light in a vacuum. In total, he added $+92$ km/s to his mean estimate
+for `VelocityVacuum` (from Michelson (1880), pg. 141). While the
+following isn't fully rigorous ($+92$ km/s is based on the mean
+temperature), we'll simply apply this correction to all the observations
+in the dataset.
 
-### __q2__ Create a new variable `VelocityVacuum` with the $+92$ km/s adjustment to `Velocity`. Assign this new dataframe to `df_q2`.
+### **q2** Create a new variable `VelocityVacuum` with the $+92$ km/s adjustment to `Velocity`. Assign this new dataframe to `df_q2`.
 
 ```{r q2-task}
 ## TODO: Adjust the data, assign to df_q2
-df_q2 <- NA
+df_q2 <- 
+  df_michelson %>%
+  mutate(VelocityVacuum = Velocity + 92)
 
 df_q2
 ```
 
-As part of his study, Michelson assessed the various potential sources of error,
-and provided his best-guess for the error in his speed-of-light estimate. These
-values are provided in `LIGHTSPEED_MICHELSON`---his nominal estimate---and
-`LIGHTSPEED_PM`---plus/minus bounds on his estimate. Put differently, Michelson
-believed the true value of the speed-of-light probably lay between
-`LIGHTSPEED_MICHELSON - LIGHTSPEED_PM` and `LIGHTSPEED_MICHELSON +
-LIGHTSPEED_PM`.
+As part of his study, Michelson assessed the various potential sources
+of error, and provided his best-guess for the error in his
+speed-of-light estimate. These values are provided in
+`LIGHTSPEED_MICHELSON`---his nominal estimate---and
+`LIGHTSPEED_PM`---plus/minus bounds on his estimate. Put differently,
+Michelson believed the true value of the speed-of-light probably lay
+between `LIGHTSPEED_MICHELSON - LIGHTSPEED_PM` and
+`LIGHTSPEED_MICHELSON + LIGHTSPEED_PM`.
 
 Let's introduce some terminology:[2]
 
-- **Error** is the difference between a true value and an estimate of that
-  value; for instance `LIGHTSPEED_VACUUM - LIGHTSPEED_MICHELSON`.
-- **Uncertainty** is an analyst's *assessment* of the error.
+-   **Error** is the difference between a true value and an estimate of
+    that value; for instance `LIGHTSPEED_VACUUM - LIGHTSPEED_MICHELSON`.
+-   **Uncertainty** is an analyst's *assessment* of the error.
 
-Since a "true" value is often not known in practice, one generally does not know
-the error. The best they can do is quantify their degree of uncertainty. We will
-learn some means of quantifying uncertainty in this class, but for many real
-problems uncertainty includes some amount of human judgment.[2]
+Since a "true" value is often not known in practice, one generally does
+not know the error. The best they can do is quantify their degree of
+uncertainty. We will learn some means of quantifying uncertainty in this
+class, but for many real problems uncertainty includes some amount of
+human judgment.[2]
 
-### __q3__ Compare Michelson's speed of light estimate against the modern speed of light value. Is Michelson's estimate of the error (his uncertainty) greater or less than the true error?
+### **q3** Compare Michelson's speed of light estimate against the modern speed of light value. Is Michelson's estimate of the error (his uncertainty) greater or less than the true error?
 
 ```{r q3-task}
 ## TODO: Compare Michelson's estimate and error against the true value
-## Your code here!
+## Your code here
+TrueError <-
+  LIGHTSPEED_MICHELSON - LIGHTSPEED_VACUUM
+TrueError
+LIGHTSPEED_PM
 ```
 
-**Observations**:
-- Is Michelson's estimate of the error (his uncertainty) greater or less than the true error?
-  - (Your response here)
-- Make a quantitative comparison between Michelson's uncertainty and his error.
-  - (Your response here)
+**Observations**: - Is Michelson's estimate of the error (his
+uncertainty) greater or less than the true error? - Michelson's estimate
+of the error of 51 km/s is much less than the true error of 151.542
+km/s.- Make a quantitative comparison between Michelson's uncertainty
+and his error. - Michelson's uncertainty was off from the error by
+around 100 km/s, which means that he underestimated the amount that his
+value for the speed of light was off from the real value. Michelson's
+value for the speed of light was lower than the true value by 151.542.
 
-The following plot shows all of Michelson's data as a [control chart](https://en.wikipedia.org/wiki/Control_chart); this sort of plot is common in manufacturing, where it is used to help determine if a manufacturing process is under [statistical control](https://en.wikipedia.org/wiki/Statistical_process_control). Each dot is one of Michelson's measurements, and the grey line connects the mean taken for each day. The same plot also shows simulated data using a probability model. We'll get into statistics later in the course; for now, let's focus on understanding what real and simulated data tend to look like.
+The following plot shows all of Michelson's data as a [control
+chart](https://en.wikipedia.org/wiki/Control_chart); this sort of plot
+is common in manufacturing, where it is used to help determine if a
+manufacturing process is under [statistical
+control](https://en.wikipedia.org/wiki/Statistical_process_control).
+Each dot is one of Michelson's measurements, and the grey line connects
+the mean taken for each day. The same plot also shows simulated data
+using a probability model. We'll get into statistics later in the
+course; for now, let's focus on understanding what real and simulated
+data tend to look like.
 
-### __q4__ Inspect the following plot with the `Real` Michelson data and `Simulated` data from a probability model. Document the similarities and differences between the data under *observe* below.
+### **q4** Inspect the following plot with the `Real` Michelson data and `Simulated` data from a probability model. Document the similarities and differences between the data under *observe* below.
 
 ```{r q4-cf-real-simulated}
 ## Note: No need to edit this chunk!
@@ -206,22 +261,151 @@ df_q2 %>%
   )
 ```
 
+**Observations**: Similarities - Looking at the mean trend lines for
+both Michelson's data and the Simulated data, they both peak and dip
+relatively on the same day. More similarities could be drawn between the
+two data sets if the methodology of the simulated study were clearly
+explained. Since we cannot determine if the simulated values are using
+Michelson's test set up to simulate data that would have occurred or if
+it representst he data that would be collected in an ideal testing
+scenario.
+
+Looking at the mean trend line of Michelson's data compared to the
+Simulated values, Michelson's data tended to be more spread away from
+the error bars he set in relation to the simulated data. This can be
+seen by counting the peaks of the trend line that are within in the
+error bars for each of the data visualizations.
+
+Differences - A difference that can be seen is that when comparing the
+mean trend line of Michelson's data to the Simulated values, Michelson's
+data tended to be more spread away from the error bars he set. This can
+be seen by counting the peaks of the trend line that are within in the
+error bars for each of the data visualizations. This means that the data
+Michelson collected was further away from the estimated error of the
+speed of light compared to the simulated values for any given testing
+day.
+
+### **q5** You have access to a few other variables. Construct a **at least three** visualizations of `VelocityVacuum` against these other factors. Are there other patterns in the data that might help explain the difference between Michelson's estimate and `LIGHTSPEED_VACUUM`?
+
+```{r}
+
+low_err <-
+  LIGHTSPEED_MICHELSON - LIGHTSPEED_PM
+high_err <-
+  LIGHTSPEED_MICHELSON + LIGHTSPEED_PM
+
+
+df_d1 <-
+  df_q2 %>%
+  mutate(WithinError = VelocityVacuum > low_err & VelocityVacuum < high_err)
+df_d1
+
+bar_plot <-
+  df_d1 %>% 
+  group_by(Distinctness, WithinError) %>% 
+  mutate(n = n()) %>% 
+  ggplot() +
+  geom_col(aes(x = Distinctness, y = n, fill = WithinError))
+
+bar_plot
+
+
+df_q2 %>%
+  ggplot(aes(x = Temp, y=VelocityVacuum)) + geom_point() +
+    geom_hline(
+    yintercept = LIGHTSPEED_MICHELSON,
+    linetype = "dotted"
+  ) +
+  geom_hline(
+    yintercept = LIGHTSPEED_MICHELSON - LIGHTSPEED_PM,
+    linetype = "dashed"
+  ) +
+  geom_hline(
+    yintercept = LIGHTSPEED_MICHELSON + LIGHTSPEED_PM,
+    linetype = "dashed"
+  ) 
+df_q2 %>%
+  ggplot(aes(x=Date, y=VelocityVacuum, color = Distinctness)) + geom_point() +
+    geom_hline(
+    yintercept = LIGHTSPEED_MICHELSON,
+    linetype = "dotted"
+  ) +
+  geom_hline(
+    yintercept = LIGHTSPEED_MICHELSON - LIGHTSPEED_PM,
+    linetype = "dashed"
+  ) +
+  geom_hline(
+    yintercept = LIGHTSPEED_MICHELSON + LIGHTSPEED_PM,
+    linetype = "dashed"
+  ) 
+
+```
+
 **Observations**:
-Similarities
-- (your responses here)
-Differences
-- (your responses here)
 
-### __q5__ You have access to a few other variables. Construct a **at least three** visualizations of `VelocityVacuum` against these other factors. Are there other patterns in the data that might help explain the difference between Michelson's estimate and `LIGHTSPEED_VACUUM`?
-
-**Observations**:
-
-- Make sure to record observations on your graphs!
-
-
+-   VelocityVacuum v.s. Temp:
+    -   None of the previous graphs visualized the relationship between
+        temperature and the value that Michelson got for the speed of
+        light in the vacuum
+    -   After plotting the data there isn't a direct correlation between
+        the temperature the experiment took place in and the value
+        Michelson got
+    -   I added the error bars, the gray dashed lines signifying the
+        plus or minus value from the true speed of light, to see if any
+        temperature was correlated to a closer experimental value around
+        the real speed of light value. While the data points collected
+        when the temperature was between 60 and 70 degrees Fahrenheit
+        had fewer values outside of the plus and minus values around the
+        true speed of light, there is still not a significant spread for
+        the other values of temperature to create a valid correlation.
+    -   One interesting observation is that at a temperature of around
+        73 degrees, the spread of values for VelocityVacuum ranges from
+        around 300150 to around 299800. This gives the indication that
+        temperature may not have a correlation with the value of
+        velocity that Michelson found
+-   VelocityVacuum v.s. Date (Colored by Distinctness)
+    -   The intention behind this graph was to determine if the
+        distinctness of the images taken by Michelson got progressively
+        better (from 1 to 3) over the course of his experimenting
+    -   While there is no trend over time, the graph does show that each
+        day was categorized with only one level of distinctness. There
+        were very few days where images were taken of varying levels of
+        distinctness
+    -   One very interesting observation was that on June 13th, the
+        values for the level 1 distinctness, the poorest level of
+        distinctness, were grouped together. This prompted me to plot
+        the error bars on this graph and I observed that these data
+        points were all clustered within the error values around the
+        true value for velocity
+    -   I had assumed that the level of distinctness would be correlated
+        to how accurate Michelson's data was to the real value of the
+        speed of light; however, this observation made me second-guess
+        that. This prompted my third visualization.
+-   Bar Chart: CountOutsideofError v.s. Distinctness
+    -   Since the Distinctness was the quality of the image that was
+        taken for each experiment, I visualized the number of data
+        points for each level of distinctness that fell within and
+        outside of the error values around the true speed of light
+    -   Distinctness 3 had the most number of data points collected out
+        of all three of the values of distinctness; however, it had less
+        values that fell within the error bars compared to the images
+        that fell within the error bars with a distinctness of 2.
+    -   This means that there is not a correlation between the
+        distinctness getting better and the accuracy of the data points
+        that were collected
+    -   There were also significantly less images of Distinctness level
+        1 that were taken, so an accurate conclusion cannot be made
+        considering the significantly larger number of images with level
+        2 and level 3 that were taken.
 
 ## Bibliography
 
-- [1] Michelson, [Experimental Determination of the Velocity of Light](https://play.google.com/books/reader?id=343nAAAAMAAJ&hl=en&pg=GBS.PA115) (1880)
-- [2] Henrion and Fischhoff, [Assessing Uncertainty in Physical Constants](https://www.cmu.edu/epp/people/faculty/research/Fischoff-Henrion-Assessing%20uncertainty%20in%20physical%20constants.pdf) (1986)
-- [3] BYU video about a [Fizeau-Foucault apparatus](https://www.youtube.com/watch?v=Ik5ORaaeaME), similar to what Michelson used.
+-   [1] Michelson, [Experimental Determination of the Velocity of
+    Light](https://play.google.com/books/reader?id=343nAAAAMAAJ&hl=en&pg=GBS.PA115)
+    (1880) 
+-   [2] Henrion and Fischhoff, [Assessing Uncertainty in Physical
+    Constants](https://www.cmu.edu/epp/people/faculty/research/Fischoff-Henrion-Assessing%20uncertainty%20in%20physical%20constants.pdf)
+    (1986) 
+-   [3] BYU video about a [Fizeau-Foucault
+    apparatus](https://www.youtube.com/watch?v=Ik5ORaaeaME), similar to
+    what Michelson used.
