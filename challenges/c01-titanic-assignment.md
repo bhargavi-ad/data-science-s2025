@@ -152,9 +152,12 @@ df_titanic %>% summarize(total = sum(n))
 
 ``` r
 ## TASK: Visualize counts against `Class` and `Sex`
-d_survived <- df_titanic %>% filter( Survived == "Yes")
-d_survived %>%
-  ggplot() + geom_col(aes(x=Class, y=n, fill = Sex), position = "dodge")
+df_survived <- 
+  df_titanic %>% 
+  filter( Survived == "Yes")
+df_survived %>%
+  ggplot() + 
+  geom_col(aes(x=Class, y=n, fill = Sex), position = "dodge")
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q3-task-1.png)<!-- -->
@@ -165,9 +168,8 @@ d_survived %>%
   Titanic sinking. This makes sense from background knowledge, knowing
   that women and children who were in the upper classes were put onto
   lifeboats first. Additionally significantly more male crew members
-  survived, however, this could either be because they were allowed to
-  board lifeboats first or simply because at this time a majority of the
-  crew were women not men.
+  survived, however, this could be because simply a majority of the crew
+  were men not women.
 
 # Deeper Look
 
@@ -214,9 +216,12 @@ df_prop
 ### **q4** Replicate your visual from q3, but display `Prop` in place of `n`. Document your observations, and note any new/different observations you make in comparison with q3. Is there anything *fishy* in your plot?
 
 ``` r
-d_survived <- df_prop %>% filter( Survived == "Yes")
-d_survived %>%
-  ggplot() + geom_col(aes(x=Class, y=Prop, fill = Sex), position = "dodge")
+df_survived_prop <- 
+  df_prop %>% 
+  filter( Survived == "Yes")
+df_survived_prop %>%
+  ggplot() + 
+  geom_col(aes(x=Class, y=Prop, fill = Sex), position = "dodge")
 ```
 
     ## Warning: Removed 2 rows containing missing values or values outside the scale range
@@ -244,11 +249,16 @@ d_survived %>%
 additional variables!
 
 ``` r
-d_survived <- df_prop %>% filter(Survived == "Yes", Age == "Adult")
+df_survived <- df_prop %>% filter(Survived == "Yes")
 
-d_survived %>%
-  ggplot() + geom_col(mapping = aes(x = Class, y = Prop, fill = Sex), position = "dodge")
+df_survived %>%
+  ggplot() + 
+  geom_col(mapping = aes(x = Class, y = Prop, fill = Sex), position = "dodge")+
+  facet_grid(~Age)
 ```
+
+    ## Warning: Removed 2 rows containing missing values or values outside the scale range
+    ## (`geom_col()`).
 
 ![](c01-titanic-assignment_files/figure-gfm/q5-task-1.png)<!-- -->
 
