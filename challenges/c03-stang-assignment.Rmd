@@ -26,7 +26,7 @@ Unlike exercises, **challenges will be graded**. The following rubrics define ho
 <!-- ------------------------- -->
 
 | Category | Needs Improvement | Satisfactory |
-|------------------|-----------------------------|-------------------------|
+|------------------------|------------------------|------------------------|
 | Effort | Some task **q**'s left unattempted | All task **q**'s attempted |
 | Observed | Did not document observations, or observations incorrect | Documented correct observations based on analysis |
 | Supported | Some observations not clearly supported by analysis | All observations clearly supported by analysis (table, graph, etc.) |
@@ -143,7 +143,7 @@ df_stang_sds
     -   The original data set shows two material property values for each thickness and angle of Aluminum, the modulus of elasticity (E) and Poisson's ratio (nu)
     -   However, for each thickness and angle there are multiple values for E and nu
     -   This Basic EDA found the standard deviation between the values of E and nu for each angle and thickness combination. There was only one form of Aluminum that had one "true" value for E as the standard deviation was 0. The rest of the E and nu values for each thickness and angle combination deviated from each other.
--   How many aluminum alloys are in this dataset? How do you know?
+-   How many aluminum alloys are in this data set? How do you know?
     -   1 because all of the values under the "alloy" column are the same, al_24st
 -   What angles were tested?
     -   0, 45, and 90
