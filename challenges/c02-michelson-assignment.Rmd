@@ -126,10 +126,11 @@ df_q1 %>%
 ```
 
 **Observations**: - Write your observations here! - My table differs
-from Michelson most likely because of rounding errors. Michelson's table
-doesn't have any decimal values or values ending in a number that is not
-zero. If I were to round the mean velocity values I got, they would
-round and match the Michelson table exactly.
+from Michelson most likely because of a difference in significant
+figures. My table has values with 7 significant figures while the
+Michelson table has values with only 5 significant figures. That is why
+the Michelson table values all end in 0, while my table has values with
+decimal places.
 
 The `Velocity` values in the dataset are the speed of light *in air*;
 Michelson introduced a couple of adjustments to estimate the speed of
