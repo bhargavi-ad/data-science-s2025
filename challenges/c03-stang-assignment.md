@@ -157,13 +157,13 @@ df_stang_long <-
       names_sep = "_",
       values_to = "val",
       cols = starts_with("E") | starts_with("mu") | starts_with("nu"),
-  )%>%
-  filter(val != -1) %>%
+  ) %>%
+  filter(val > -1) %>%
     pivot_wider(
       names_from = var,
       values_from = val,
     ) %>%
-  mutate(angle = as.integer(angle))%>%
+  mutate(angle = as.integer(angle)) %>%
   unnest(cols = c(E,nu))
 ```
 
@@ -247,7 +247,6 @@ df_stang_sd_E <-
   df_stang_long %>%
   group_by(thick, angle, alloy) %>%
   summarize(sd_E = sd(E), .groups = "drop")
-  
 df_stang_sd_nu <-
    df_stang_long %>%
   group_by(thick, angle) %>%
@@ -311,14 +310,16 @@ df_stang_sds
 
 ``` r
 df_stang_long %>%
-  ggplot(aes(x=angle, y= E, color = thick)) + geom_point()
+  ggplot(aes(x = angle, y = E, color = as_factor(thick))) + 
+  geom_point()
 ```
 
 ![](c03-stang-assignment_files/figure-gfm/q3-task-1.png)<!-- -->
 
 ``` r
 df_stang_long %>%
-  ggplot(aes(x= angle, y=nu, color = thick)) + geom_point()
+  ggplot(aes(x = angle, y = nu, color = as_factor(thick))) + 
+  geom_point()
 ```
 
 ![](c03-stang-assignment_files/figure-gfm/q3-task-2.png)<!-- -->
@@ -373,7 +374,6 @@ Is this evidence *conclusive* one way or another? Why or why not?
 ``` r
 ## NOTE: No need to change; run this chunk
 df_stang_long %>%
-
   ggplot(aes(nu, E, color = as_factor(thick))) +
   geom_point(size = 3) +
   theme_minimal()
