@@ -158,7 +158,7 @@ df_stang_long <-
       values_to = "val",
       cols = starts_with("E") | starts_with("mu") | starts_with("nu"),
   ) %>%
-  filter(val > -1) %>%
+  filter(val > 0) %>%
     pivot_wider(
       names_from = var,
       values_from = val,
@@ -174,6 +174,23 @@ df_stang_long <-
     ##   {data} |>
     ##   dplyr::summarise(n = dplyr::n(), .by = c(thick, alloy, angle, var)) |>
     ##   dplyr::filter(n > 1L)
+
+``` r
+df_stang
+```
+
+    ## # A tibble: 9 × 8
+    ##   thick  E_00 nu_00  E_45  nu_45  E_90 nu_90 alloy  
+    ##   <dbl> <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <chr>  
+    ## 1 0.022 10600 0.321 10700  0.329 10500 0.31  al_24st
+    ## 2 0.022 10600 0.323 10500  0.331 10700 0.323 al_24st
+    ## 3 0.032 10400 0.329 10400  0.318 10300 0.322 al_24st
+    ## 4 0.032 10300 0.319 10500  0.326 10400 0.33  al_24st
+    ## 5 0.064 10500 0.323 10400  0.331 10400 0.327 al_24st
+    ## 6 0.064 10700 0.328 10500  0.328 10500 0.32  al_24st
+    ## 7 0.081 10000 0.315 10000  0.32   9900 0.314 al_24st
+    ## 8 0.081 10100 0.312  9900  0.312 10000 0.316 al_24st
+    ## 9 0.081 10000 0.311    -1 -1      9900 0.314 al_24st
 
 ``` r
 df_stang_long

@@ -78,14 +78,14 @@ df_stang_long <-
       values_to = "val",
       cols = starts_with("E") | starts_with("mu") | starts_with("nu"),
   ) %>%
-  filter(val > -1) %>%
+  filter(val > 0) %>%
     pivot_wider(
       names_from = var,
       values_from = val,
     ) %>%
   mutate(angle = as.integer(angle)) %>%
   unnest(cols = c(E,nu))
-
+df_stang
 df_stang_long
 ```
 
