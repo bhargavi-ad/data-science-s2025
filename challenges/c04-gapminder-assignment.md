@@ -206,7 +206,7 @@ gapminder %>%
     gdpPercap < 90000,
   ) %>%
   ggplot + 
-  geom_point(aes(x=continent, y = gdpPercap))
+  geom_boxplot(aes(x=continent, y = gdpPercap))
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q2-task-1.png)<!-- -->
@@ -217,7 +217,7 @@ gapminder %>%
     year == year_min,
   ) %>%
   ggplot + 
-  geom_point(aes(x=continent, y = gdpPercap)) + scale_y_log10()
+  geom_boxplot(aes(x=continent, y = gdpPercap)) + scale_y_log10()
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q2-task-2.png)<!-- -->
@@ -228,8 +228,9 @@ the data set to be better spread and clear
 
 - The two countries in Oceania are close to the GDP of Europe
 - Apart from the outlier country in Asia, both the continents of Africa
-  and Asia have lower GDPs per Capita which tracks with historical
-  context of both of these continents
+  and Asia have lower mean GDPs per Capita compared to the Americas and
+  Europe, which tracks based on the historical context of both of these
+  continents
 - The Americas are grouped together, which is something I have not seen
   often. I think it would be interesting to see the spread when the
   Americas are separated between North America and South America. I also
