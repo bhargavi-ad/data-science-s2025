@@ -491,8 +491,8 @@ data.
 df_normalized <-
   df_data %>%
   mutate (
-    cases_per100k = (cases/population)*100000,
-    deaths_per100k = (deaths/population)*100000
+    cases_per100k = (cases / population) * 100000,
+    deaths_per100k = (deaths / population) * 100000
     ) 
 df_normalized
 ```
