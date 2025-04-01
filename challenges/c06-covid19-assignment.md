@@ -490,8 +490,10 @@ data.
 ## TASK: Normalize cases and deaths
 df_normalized <-
   df_data %>%
-  mutate(cases_per100k = (cases/population)*100000) %>%
-  mutate(deaths_per100k = (deaths/population)*100000)
+  mutate (
+    cases_per100k = (cases/population)*100000,
+    deaths_per100k = (deaths/population)*100000
+    ) 
 df_normalized
 ```
 
@@ -625,63 +627,21 @@ include in your summaries,* and justify why!
 ## TASK: Compute mean and sd for cases_per100k and deaths_per100k
 df_summs <-
   df_normalized %>%
-  group_by(fips) %>%
   filter(!is.na(cases_per100k) & !is.na(deaths_per100k)) %>% 
-  filter(date == max(date))
-  # mutate(max_cases_per100k = max(cases_per100k),
-  #           max_deaths_per100k = max(deaths_per100k))
-
+  filter(date == max(date)) %>%
+  summarize(
+    mean_cases = mean(cases_per100k, na.rm = TRUE),
+    sd_cases = sd(cases_per100k, na.rm = TRUE),
+    mean_deaths = mean(deaths_per100k, na.rm = TRUE),
+    sd_deaths = sd(deaths_per100k, na.rm = TRUE)
+  )
 df_summs
 ```
 
-    ## # A tibble: 3,133 × 9
-    ## # Groups:   fips [3,133]
-    ##    date       county   state   fips  cases deaths population cases_per100k
-    ##    <date>     <chr>    <chr>   <chr> <dbl>  <dbl>      <dbl>         <dbl>
-    ##  1 2022-05-13 Autauga  Alabama 01001 15863    216      55200        28737.
-    ##  2 2022-05-13 Baldwin  Alabama 01003 55862    681     208107        26843.
-    ##  3 2022-05-13 Barbour  Alabama 01005  5681     98      25782        22035.
-    ##  4 2022-05-13 Bibb     Alabama 01007  6457    105      22527        28663.
-    ##  5 2022-05-13 Blount   Alabama 01009 15005    243      57645        26030.
-    ##  6 2022-05-13 Bullock  Alabama 01011  2319     54      10352        22401.
-    ##  7 2022-05-13 Butler   Alabama 01013  5068    129      20025        25308.
-    ##  8 2022-05-13 Calhoun  Alabama 01015 32453    627     115098        28196.
-    ##  9 2022-05-13 Chambers Alabama 01017  8508    162      33826        25152.
-    ## 10 2022-05-13 Cherokee Alabama 01019  5131     86      25853        19847.
-    ## # ℹ 3,123 more rows
-    ## # ℹ 1 more variable: deaths_per100k <dbl>
-
-``` r
-mean_cases_per100k <- 
-  mean(df_summs$cases_per100k)
-mean_deaths_per100k <- 
-  mean(df_summs$deaths_per100k)
-sd_cases_per100k <-
-  sd(df_summs$cases_per100k)
-sd_deaths_per100k <-
-  sd(df_summs$deaths_per100k)
-mean_cases_per100k
-```
-
-    ## [1] 24966.74
-
-``` r
-sd_cases_per100k
-```
-
-    ## [1] 6174.403
-
-``` r
-mean_deaths_per100k
-```
-
-    ## [1] 375.1242
-
-``` r
-sd_deaths_per100k
-```
-
-    ## [1] 159.7369
+    ## # A tibble: 1 × 4
+    ##   mean_cases sd_cases mean_deaths sd_deaths
+    ##        <dbl>    <dbl>       <dbl>     <dbl>
+    ## 1     24967.    6174.        375.      160.
 
 - Which rows did you pick?
   - I picked only the rows corresponding to each county’s latest date
@@ -702,9 +662,11 @@ you found in q6. Note any observations.
 ``` r
 ## TASK: Find the top 10 max cases_per100k counties; report populations as well
 ten_top_max_cases <-
-  df_summs %>%
-    ungroup(fips) %>%
+  df_normalized %>%
+    group_by(fips) %>%
+    slice_max(cases_per100k, n = 1, with_ties = FALSE) %>%
     arrange(desc(cases_per100k)) %>%
+    ungroup() %>%
     slice_head(n=10) %>%
     select(date, county, state, fips, cases_per100k, population)
 ten_top_max_cases
@@ -713,23 +675,25 @@ ten_top_max_cases
     ## # A tibble: 10 × 6
     ##    date       county                   state      fips  cases_per100k population
     ##    <date>     <chr>                    <chr>      <chr>         <dbl>      <dbl>
-    ##  1 2022-05-13 Loving                   Texas      48301       192157.        102
-    ##  2 2022-05-13 Chattahoochee            Georgia    13053        69527.      10767
-    ##  3 2022-05-13 Nome Census Area         Alaska     02180        62922.       9925
-    ##  4 2022-05-13 Northwest Arctic Borough Alaska     02188        62542.       7734
+    ##  1 2022-05-12 Loving                   Texas      48301       192157.        102
+    ##  2 2022-05-11 Chattahoochee            Georgia    13053        69527.      10767
+    ##  3 2022-05-11 Nome Census Area         Alaska     02180        62922.       9925
+    ##  4 2022-05-11 Northwest Arctic Borough Alaska     02188        62542.       7734
     ##  5 2022-05-13 Crowley                  Colorado   08025        59449.       5630
-    ##  6 2022-05-13 Bethel Census Area       Alaska     02050        57439.      18040
-    ##  7 2022-05-13 Dewey                    South Dak… 46041        54317.       5779
-    ##  8 2022-05-13 Dimmit                   Texas      48127        54019.      10663
-    ##  9 2022-05-13 Jim Hogg                 Texas      48247        50133.       5282
-    ## 10 2022-05-13 Kusilvak Census Area     Alaska     02158        49817.       8198
+    ##  6 2022-05-11 Bethel Census Area       Alaska     02050        57439.      18040
+    ##  7 2022-03-30 Dewey                    South Dak… 46041        54317.       5779
+    ##  8 2022-05-12 Dimmit                   Texas      48127        54019.      10663
+    ##  9 2022-05-12 Jim Hogg                 Texas      48247        50133.       5282
+    ## 10 2022-05-11 Kusilvak Census Area     Alaska     02158        49817.       8198
 
 ``` r
 ## TASK: Find the top 10 deaths_per100k counties; report populations as well
 ten_top_max_deaths <-
-  df_summs %>%
-    ungroup(fips) %>%
+  df_normalized %>%
+    group_by(fips) %>%
+    slice_max(deaths_per100k, n = 1, with_ties = FALSE) %>%
     arrange(desc(deaths_per100k)) %>%
+    ungroup() %>%
     slice_head(n=10) %>%
     select(date, county, state, fips, deaths_per100k, population)
 ten_top_max_deaths
@@ -738,16 +702,16 @@ ten_top_max_deaths
     ## # A tibble: 10 × 6
     ##    date       county            state        fips  deaths_per100k population
     ##    <date>     <chr>             <chr>        <chr>          <dbl>      <dbl>
-    ##  1 2022-05-13 McMullen          Texas        48311          1360.        662
-    ##  2 2022-05-13 Galax city        Virginia     51640          1175.       6638
-    ##  3 2022-05-13 Motley            Texas        48345          1125.       1156
-    ##  4 2022-05-13 Hancock           Georgia      13141          1054.       8535
-    ##  5 2022-05-13 Emporia city      Virginia     51595          1022.       5381
-    ##  6 2022-05-13 Towns             Georgia      13281          1016.      11417
-    ##  7 2022-05-13 Jerauld           South Dakota 46073           986.       2029
-    ##  8 2022-05-13 Loving            Texas        48301           980.        102
-    ##  9 2022-05-13 Robertson         Kentucky     21201           980.       2143
-    ## 10 2022-05-13 Martinsville city Virginia     51690           946.      13101
+    ##  1 2022-02-19 McMullen          Texas        48311          1360.        662
+    ##  2 2022-04-27 Galax city        Virginia     51640          1175.       6638
+    ##  3 2022-03-10 Motley            Texas        48345          1125.       1156
+    ##  4 2022-04-20 Hancock           Georgia      13141          1054.       8535
+    ##  5 2022-04-19 Emporia city      Virginia     51595          1022.       5381
+    ##  6 2022-04-27 Towns             Georgia      13281          1016.      11417
+    ##  7 2022-02-14 Jerauld           South Dakota 46073           986.       2029
+    ##  8 2022-03-04 Loving            Texas        48301           980.        102
+    ##  9 2022-02-03 Robertson         Kentucky     21201           980.       2143
+    ## 10 2022-05-05 Martinsville city Virginia     51690           946.      13101
 
 **Observations**:
 
@@ -757,7 +721,17 @@ ten_top_max_deaths
   be; however, the size of the county very well dictates how the county
   behaves. I don’t believe extrapolating this out would give us a
   reliable measure of the behavior of a town.
+- All ten of the counties with the top ten cases per 100k had values
+  above one standard deviation away from the mean of the max cases
+  calculated in q6
+- All ten of the counties with the top ten deaths per 100k had values
+  above two standard deviation away from the mean of max cases
+  calculated in q6
 - When did these “largest values” occur?
+  - These “largest values” occurred all in 2022, the largest cases per
+    100k were mainly in May 2022 and the largest deaths per 100k were
+    more in April. These could be because of when the data collection
+    ended.
   - The ‘largest values’ occurred in some of the counties with the
     smaller population size. It is interesting that the counties with
     the highest deaths per 100k are not the same counties with the most
@@ -843,25 +817,25 @@ df_ressurection <-
 df_uniq_states <-
   df_ressurection %>%
   group_by(state) %>%
-  summarize(num_occ = n()) %>%
-  arrange(desc(num_occ))
+  summarize(number_of_death_miscounts = n()) %>%
+  arrange(desc(number_of_death_miscounts))
   
 df_uniq_states
 ```
 
     ## # A tibble: 55 × 2
-    ##    state          num_occ
-    ##    <chr>            <int>
-    ##  1 Georgia            150
-    ##  2 Texas              131
-    ##  3 Virginia           128
-    ##  4 North Carolina      91
-    ##  5 Tennessee           91
-    ##  6 Missouri            90
-    ##  7 Michigan            82
-    ##  8 Ohio                79
-    ##  9 Indiana             72
-    ## 10 Arkansas            70
+    ##    state          number_of_death_miscounts
+    ##    <chr>                              <int>
+    ##  1 Georgia                              150
+    ##  2 Texas                                131
+    ##  3 Virginia                             128
+    ##  4 North Carolina                        91
+    ##  5 Tennessee                             91
+    ##  6 Missouri                              90
+    ##  7 Michigan                              82
+    ##  8 Ohio                                  79
+    ##  9 Indiana                               72
+    ## 10 Arkansas                              70
     ## # ℹ 45 more rows
 
 ``` r
@@ -905,27 +879,9 @@ full_df <-
     pres_elect_data,
     by = "state"
   )
-full_df
-```
-
-    ## # A tibble: 51 × 6
-    ##    state          num_occ    EV     D     R Democrat
-    ##    <chr>            <int> <dbl> <dbl> <dbl> <lgl>   
-    ##  1 Georgia            150    16    16     0 TRUE    
-    ##  2 Texas              131    38     0    38 FALSE   
-    ##  3 Virginia           128    13    13     0 TRUE    
-    ##  4 North Carolina      91    15     0    15 FALSE   
-    ##  5 Tennessee           91    11     0    11 FALSE   
-    ##  6 Missouri            90    10     0    10 FALSE   
-    ##  7 Michigan            82    16    16     0 TRUE    
-    ##  8 Ohio                79    18     0    18 FALSE   
-    ##  9 Indiana             72    11     0    11 FALSE   
-    ## 10 Arkansas            70     6     0     6 FALSE   
-    ## # ℹ 41 more rows
-
-``` r
-ggplot(full_df) +
-  geom_col(aes(state, num_occ, fill = Democrat)) +
+full_df %>%
+ggplot() +
+  geom_col(aes(state, number_of_death_miscounts, fill = Democrat)) +
     theme(axis.text.x = element_text(angle = 65, vjust = 1, hjust = 1))
 ```
 
