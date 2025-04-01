@@ -1,30 +1,24 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
+Estimating Pi With a Shotgun
+================
+Bhargavi Deshpande
+3-24-2025
 
-# Estimating Pi With a Shotgun
-
-Bhargavi Deshpande 3-24-2025
-
--   [Grading Rubric](#grading-rubric)
-    -   [Individual](#individual)
-    -   [Submission](#submission)
--   [Monte Carlo](#monte-carlo)
-    -   [Theory](#theory)
-    -   [Implementation](#implementation)
-        -   [**q1** Generate a uniform random sample on the unit
-            square](#q1-generate-a-uniform-random-sample-on-the-unit-square)
-        -   [**q3** Estimate $\pi$](#q3-estimate-pi)
-    -   [Quantifying Uncertainty](#quantifying-uncertainty)
-        -   [**q4** Simulation-based
-            inference](#q4-simulation-based-inference)
-        -   [**q5** Bootstrap percentile confidence
-            interval](#q5-bootstrap-percentile-confidence-interval)
-        -   [**q6** CLT confidence
-            interval](#q6-clt-confidence-interval)
--   [References](#references)
+- [Grading Rubric](#grading-rubric)
+  - [Individual](#individual)
+  - [Submission](#submission)
+- [Monte Carlo](#monte-carlo)
+  - [Theory](#theory)
+  - [Implementation](#implementation)
+    - [**q1** Generate a uniform random sample on the unit
+      square](#q1-generate-a-uniform-random-sample-on-the-unit-square)
+    - [**q3** Estimate $\pi$](#q3-estimate-pi)
+  - [Quantifying Uncertainty](#quantifying-uncertainty)
+    - [**q4** Simulation-based
+      inference](#q4-simulation-based-inference)
+    - [**q5** Bootstrap percentile confidence
+      interval](#q5-bootstrap-percentile-confidence-interval)
+    - [**q6** CLT confidence interval](#q6-clt-confidence-interval)
+- [References](#references)
 
 *Purpose*: Random sampling is extremely powerful. To build more
 intuition for how we can use random sampling to solve problems, we’ll
@@ -36,19 +30,19 @@ uncertainty in your estimate.
 
 <!-- include-rubric -->
 
-# Grading Rubric {#grading-rubric}
+# Grading Rubric
 
 <!-- -------------------------------------------------- -->
 
 Unlike exercises, **challenges will be graded**. The following rubrics
 define how you will be graded, both on an individual and team basis.
 
-## Individual {#individual}
+## Individual
 
 <!-- ------------------------- -->
 
 | Category | Needs Improvement | Satisfactory |
-|------------------------|------------------------|------------------------|
+|----|----|----|
 | Effort | Some task **q**’s left unattempted | All task **q**’s attempted |
 | Observed | Did not document observations, or observations incorrect | Documented correct observations based on analysis |
 | Supported | Some observations not clearly supported by analysis | All observations clearly supported by analysis (table, graph, etc.) |
@@ -56,7 +50,7 @@ define how you will be graded, both on an individual and team basis.
 | Specified | Uses the phrase “more data are necessary” without clarification | Any statement that “more data are necessary” specifies which *specific* data are needed to answer what *specific* question |
 | Code Styled | Violations of the [style guide](https://style.tidyverse.org/) hinder readability | Code sufficiently close to the [style guide](https://style.tidyverse.org/) |
 
-## Submission {#submission}
+## Submission
 
 <!-- ------------------------- -->
 
@@ -69,29 +63,27 @@ all files uploaded to GitHub.**
 library(tidyverse)
 ```
 
-```         
-## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-## ✔ purrr     1.0.2     
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-```
+    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+    ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+    ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+    ## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+    ## ✔ purrr     1.0.2     
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
 ``` r
 library(rsample)
 ```
 
 *Background*: In 2014, some crazy Quebecois physicists estimated $\pi$
-with a pump-action shotgun$$1,2$$. Their technique was based on the
+with a pump-action shotgun\[1,2\]. Their technique was based on the
 *Monte Carlo method*, a general strategy for turning deterministic
 problems into random sampling.
 
-# Monte Carlo {#monte-carlo}
+# Monte Carlo
 
 <!-- -------------------------------------------------- -->
 
@@ -115,12 +107,12 @@ possible. Problems that are easy to do by hand can quickly become
 intractable if you make a slight change to the problem formulation.
 Monte Carlo is a *general* approach; so long as you can model your
 problem in terms of random variables, you can apply the Monte Carlo
-method. See Ref. $$3$$ for many more details on using Monte Carlo.
+method. See Ref. \[3\] for many more details on using Monte Carlo.
 
 In this challenge, we’ll tackle a deterministic problem (computing
 $\pi$) with the Monte Carlo method.
 
-## Theory {#theory}
+## Theory
 
 <!-- ------------------------- -->
 
@@ -159,13 +151,11 @@ tibble(x = seq(0, 1, length.out = 100)) %>%
   coord_fixed()
 ```
 
-```         
-## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-## ℹ Please use `linewidth` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-## generated.
-```
+    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `linewidth` instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
 
 ![](c07-monte-carlo-assignment_files/figure-gfm/vis-areas-1.png)<!-- -->
 
@@ -191,7 +181,7 @@ $$\pi = \mathbb{E}[4 I_{X \in S_c}],$$
 
 where $\mathbb{E}[Y]$ is syntax for taking the average of $Y$.
 
-## Implementation {#implementation}
+## Implementation
 
 <!-- ------------------------- -->
 
@@ -199,7 +189,7 @@ Remember in `e-stat02-probability` we learned how to estimate
 probabilities as the limit of frequencies. Use your knowledge from that
 exercise to generate Monte Carlo data.
 
-### **q1** Generate a uniform random sample on the unit square {#q1-generate-a-uniform-random-sample-on-the-unit-square}
+### **q1** Generate a uniform random sample on the unit square
 
 Pick a sample size $n$ and generate $n$ points *uniform randomly* in the
 square $x \in [0, 1]$ and $y \in [0, 1]$.
@@ -215,22 +205,20 @@ df_q1 <- # Generate the data
 df_q1
 ```
 
-```         
-## # A tibble: 500 × 2
-##        x      y
-##    <dbl>  <dbl>
-##  1 0.681 0.894 
-##  2 0.684 0.418 
-##  3 0.256 0.0627
-##  4 0.166 0.0619
-##  5 0.145 0.930 
-##  6 0.635 0.303 
-##  7 0.557 0.433 
-##  8 0.193 0.561 
-##  9 0.362 0.727 
-## 10 0.844 0.904 
-## # ℹ 490 more rows
-```
+    ## # A tibble: 500 × 2
+    ##         x     y
+    ##     <dbl> <dbl>
+    ##  1 0.981  0.826
+    ##  2 0.705  0.780
+    ##  3 0.924  0.272
+    ##  4 0.864  0.661
+    ##  5 0.982  0.626
+    ##  6 0.130  0.787
+    ##  7 0.155  0.596
+    ##  8 0.987  0.445
+    ##  9 0.0372 0.192
+    ## 10 0.622  0.402
+    ## # ℹ 490 more rows
 
 Use the following to check that you’ve used the correct variable names.
 (NB. This does not check correctness.)
@@ -245,9 +233,7 @@ assertthat::assert_that(
 )
 ```
 
-```         
-## [1] TRUE
-```
+    ## [1] TRUE
 
 ``` r
 # Correct column names
@@ -257,17 +243,13 @@ assertthat::assert_that(
 )
 ```
 
-```         
-## [1] TRUE
-```
+    ## [1] TRUE
 
 ``` r
 print("Good")
 ```
 
-```         
-## [1] "Good"
-```
+    ## [1] "Good"
 
 \###**q2** Write a helper function
 
@@ -286,7 +268,7 @@ Answer the questions below.
 ``` r
 ## TASK: Finish implementing this function
 stat <- function(x, y) {
-  return(4*((x^2)+(y^2)) <=1)
+  return(4*(((x^2)+(y^2)) <=1))
   }
 ```
 
@@ -307,9 +289,7 @@ assertthat::assert_that(
 )
 ```
 
-```         
-## [1] TRUE
-```
+    ## [1] TRUE
 
 ``` r
 # Check the value for points *outside* the circle
@@ -323,34 +303,30 @@ assertthat::assert_that(
 )
 ```
 
-```         
-## [1] TRUE
-```
+    ## [1] TRUE
 
 ``` r
 print("Your assertions passed, but make sure they're checking the right thing!")
 ```
 
-```         
-## [1] "Your assertions passed, but make sure they're checking the right thing!"
-```
+    ## [1] "Your assertions passed, but make sure they're checking the right thing!"
 
 *Observations*
 
--   You chose a correct value of `stat(x, y)` when `x, y` is *outside*
-    the circle. Why did you choose this value?
-    -   I chose an x value of 2.5 and a y value of 5 because I know
-        these are outside of a circle with a radius of one. Therefore, I
-        would be able to validate that the points outside the circle are
-        evaluated as 0 by the indicator function.
--   You chose a correct value of `stat(x, y)` when `x, y` is *inside*
-    the circle. Why did you choose this value?
-    -   I chose an x value of 0.2 and 0.3 because I know these are
-        inside of the circle with a radius of one. Therefore, I would be
-        able to validate that the points outside the circle evaluated as
-        4 by the indicator function multiplied by 4.
+- You chose a correct value of `stat(x, y)` when `x, y` is *outside* the
+  circle. Why did you choose this value?
+  - I chose an x value of 2.5 and a y value of 5 because I know these
+    are outside of a circle with a radius of one. Therefore, I would be
+    able to validate that the points outside the circle are evaluated as
+    0 by the indicator function.
+- You chose a correct value of `stat(x, y)` when `x, y` is *inside* the
+  circle. Why did you choose this value?
+  - I chose an x value of 0.2 and 0.3 because I know these are inside of
+    the circle with a radius of one. Therefore, I would be able to
+    validate that the points outside the circle evaluated as 4 by the
+    indicator function multiplied by 4.
 
-### **q3** Estimate $\pi$ {#q3-estimate-pi}
+### **q3** Estimate $\pi$
 
 Using your data in `df_q1`, estimate $\pi$.
 
@@ -359,19 +335,17 @@ Using your data in `df_q1`, estimate $\pi$.
 df_q3 <- 
   df_q1 %>% 
   # TODO: Estimate pi as the column `pi_est`
-  mutate(
-    inside = stat(x,y)
-  ) %>%
-  summarise(pi_est = 4*mean(inside))
+  # mutate(
+  #   inside = stat(x,y)
+  # ) %>%
+  summarise(pi_est = mean(stat(x,y)))
 df_q3
 ```
 
-```         
-## # A tibble: 1 × 1
-##   pi_est
-##    <dbl>
-## 1   3.22
-```
+    ## # A tibble: 1 × 1
+    ##   pi_est
+    ##    <dbl>
+    ## 1   3.09
 
 Use the following to check that you’ve used the correct variable names.
 (NB. This does not check correctness.)
@@ -386,9 +360,7 @@ assertthat::assert_that(
 )
 ```
 
-```         
-## [1] TRUE
-```
+    ## [1] TRUE
 
 ``` r
 # Correct column names
@@ -398,19 +370,15 @@ assertthat::assert_that(
 )
 ```
 
-```         
-## [1] TRUE
-```
+    ## [1] TRUE
 
 ``` r
 print("Good")
 ```
 
-```         
-## [1] "Good"
-```
+    ## [1] "Good"
 
-## Quantifying Uncertainty {#quantifying-uncertainty}
+## Quantifying Uncertainty
 
 <!-- -------------------------------------------------- -->
 
@@ -419,7 +387,7 @@ In `e-stat06-clt` we discussed *confidence intervals* as a means to
 quantify the uncertainty in an estimate. Now you’ll apply that knowledge
 to assess your $\pi$ estimate.
 
-### **q4** Simulation-based inference {#q4-simulation-based-inference}
+### **q4** Simulation-based inference
 
 Complete the code below to perform a bootstrap resample of your $\pi$
 estimate. Answer the questions below.
@@ -435,10 +403,10 @@ df_q4 <-
       function(split_df) {
         analysis(split_df) %>% 
             # TODO: Estimate pi as the column `pi_est`
-            mutate(
-            inside = stat(x,y)
-            ) %>%
-            summarise(pi_est = 4*mean(inside)) %>%
+            # mutate(
+            # inside = stat(x,y)
+            # ) %>%
+            summarise(pi_est = mean(stat(x,y))) %>%
           # Estimate pi (pi_est) using the resampled data;
           # this should be *identical* to the
           # code you wrote for q3
@@ -453,19 +421,17 @@ df_q4 %>%
   geom_histogram()
 ```
 
-```         
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-```
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
 ![](c07-monte-carlo-assignment_files/figure-gfm/q4-task-1.png)<!-- -->
 
 *Observations*
 
--   What is a range of plausible values, based on the sampling
-    distribution you’ve generated?
-    -   2.9 - 3.4
+- What is a range of plausible values, based on the sampling
+  distribution you’ve generated?
+  - 2.9 - 3.4
 
-### **q5** Bootstrap percentile confidence interval {#q5-bootstrap-percentile-confidence-interval}
+### **q5** Bootstrap percentile confidence interval
 
 Compute a bootstrap confidence interval for $\pi$ at the 95% confidence
 level (`alpha = 0.05`).
@@ -486,14 +452,12 @@ df_q5 <-
 df_q5
 ```
 
-```         
-## # A tibble: 1 × 2
-##   pi_lo pi_up
-##   <dbl> <dbl>
-## 1  3.10  3.36
-```
+    ## # A tibble: 1 × 2
+    ##   pi_lo pi_up
+    ##   <dbl> <dbl>
+    ## 1  2.94  3.24
 
-### **q6** CLT confidence interval {#q6-clt-confidence-interval}
+### **q6** CLT confidence interval
 
 Compute a CLT-based confidence interval for $\pi$ at the 95% confidence
 level (`alpha = 0.05`). Answer the questions below, comparing with your
@@ -508,7 +472,7 @@ done something *wrong* in one of the tasks….
 
 ``` r
 df_q1 %>%
-  mutate(innie = 4*stat(x, y)) %>%  
+  mutate(innie = stat(x, y)) %>%  
   summarize(
     mean = mean(innie),
     sd = sd(innie),
@@ -522,59 +486,55 @@ df_q1 %>%
   )
 ```
 
-```         
-## # A tibble: 1 × 7
-##    mean    sd     n   z_c     se    lo    hi
-##   <dbl> <dbl> <int> <dbl>  <dbl> <dbl> <dbl>
-## 1  3.22  1.58   500  1.96 0.0708  3.09  3.36
-```
+    ## # A tibble: 1 × 7
+    ##    mean    sd     n   z_c     se    lo    hi
+    ##   <dbl> <dbl> <int> <dbl>  <dbl> <dbl> <dbl>
+    ## 1  3.09  1.68   500  1.96 0.0751  2.94  3.24
 
 **Observations**:
 
--   Does your intervals include the true value of $\pi$?
-    -   (Bootstrap CI: yes or no?) Yes
-    -   (CLT CI: yes or no?) Yes
--   How closely do your bootstrap CI and CLT CI agree?
-    -   They are very close together. The lower bounds on the CLT CI has
-        more significant figures than the bootstrap CI and the upper
-        bounds on the bootstrap CI is 0.014 lower than the CLT CI upper
-        bound.
--   Comment on the width of your CI(s). Would your estimate of $\pi$ be
-    good enough for roughly estimating an area (e.g., to buy enough
-    paint for an art project)? Would your estimate of $\pi$ be good
-    enough for precisely calculating a trajectory (e.g., sending a
-    rocket into orbit)?
-    -   I think the width of each CI is good enough for roughly
-        estimating an area. For example, needing to find the right
-        amount of paint for a project would require rounding values to
-        the nearest paint can amount or nearest area unit, which would
-        be similar to estimating the value of pi and being within this
-        confidence interval.
-    -   This would not be good enough as a precise estimate because a
-        precise estimate would require that the estimation of pi would
-        be at least 3.14 if not more significant figures. This is
-        because a precise estimate requires the lease amount of rounding
-        and since pi is not a perfect number the rounding must occur in
-        the smallest decimal places possible.
--   What would be a *valid* way to make your CI more narrow?
-    -   A valid way to make CI more narrow would be to increase the
-        value of n. The greater the value of n is the more closely the
-        sample distribution falls along a normal distribution curve.
-        Also width of the confidence interval is based off of zc\*SE
-        where zc is always the same based on the range of confidence,
-        i.e. 95%, and SE is the standard deviation divided by the square
-        root of n. So, as you increase n, the value of SE decreases and
-        the bounds of your CI shrinks.
+- Does your intervals include the true value of $\pi$?
+  - (Bootstrap CI: yes or no?) Yes
+  - (CLT CI: yes or no?) Yes
+- How closely do your bootstrap CI and CLT CI agree?
+  - They are very close together. The lower bounds on the CLT CI has
+    more significant figures than the bootstrap CI and the upper bounds
+    on the bootstrap CI is 0.014 lower than the CLT CI upper bound.
+- Comment on the width of your CI(s). Would your estimate of $\pi$ be
+  good enough for roughly estimating an area (e.g., to buy enough paint
+  for an art project)? Would your estimate of $\pi$ be good enough for
+  precisely calculating a trajectory (e.g., sending a rocket into
+  orbit)?
+  - I think the width of each CI is good enough for roughly estimating
+    an area. For example, needing to find the right amount of paint for
+    a project would require rounding values to the nearest paint can
+    amount or nearest area unit, which would be similar to estimating
+    the value of pi and being within this confidence interval.
+  - This would not be good enough as a precise estimate because a
+    precise estimate would require that the estimation of pi would be at
+    least 3.14 if not more significant figures. This is because a
+    precise estimate requires the lease amount of rounding and since pi
+    is not a perfect number the rounding must occur in the smallest
+    decimal places possible.
+- What would be a *valid* way to make your CI more narrow?
+  - A valid way to make CI more narrow would be to increase the value of
+    n. The greater the value of n is the more closely the sample
+    distribution falls along a normal distribution curve. Also width of
+    the confidence interval is based off of zc\*SE where zc is always
+    the same based on the range of confidence, i.e. 95%, and SE is the
+    standard deviation divided by the square root of n. So, as you
+    increase n, the value of SE decreases and the bounds of your CI
+    shrinks.
 
-# References {#references}
+# References
 
 <!-- -------------------------------------------------- -->
 
-$$1$$ Dumoulin and Thouin, “A Ballistic Monte Carlo Approximation of Pi”
+\[1\] Dumoulin and Thouin, “A Ballistic Monte Carlo Approximation of Pi”
 (2014) ArXiv, [link](https://arxiv.org/abs/1404.1499)
 
-$$2$$ “How Mathematicians Used A Pump-Action Shotgun to Estimate Pi”,
+\[2\] “How Mathematicians Used A Pump-Action Shotgun to Estimate Pi”,
 [link](https://medium.com/the-physics-arxiv-blog/how-mathematicians-used-a-pump-action-shotgun-to-estimate-pi-c1eb776193ef)
 
-$$3$$ Art Owen “Monte Carlo”,
+\[3\] Art Owen “Monte Carlo”,
 [link](https://statweb.stanford.edu/~owen/mc/)

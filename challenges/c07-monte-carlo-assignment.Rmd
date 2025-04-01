@@ -204,10 +204,10 @@ Using your data in `df_q1`, estimate $\pi$.
 df_q3 <- 
   df_q1 %>% 
   # TODO: Estimate pi as the column `pi_est`
-  mutate(
-    inside = stat(x,y)
-  ) %>%
-  summarise(pi_est = mean(inside))
+  # mutate(
+  #   inside = stat(x,y)
+  # ) %>%
+  summarise(pi_est = mean(stat(x,y)))
 df_q3
 ```
 
@@ -250,10 +250,10 @@ df_q4 <-
       function(split_df) {
         analysis(split_df) %>% 
             # TODO: Estimate pi as the column `pi_est`
-            mutate(
-            inside = stat(x,y)
-            ) %>%
-            summarise(pi_est = mean(inside)) %>%
+            # mutate(
+            # inside = stat(x,y)
+            # ) %>%
+            summarise(pi_est = mean(stat(x,y))) %>%
           # Estimate pi (pi_est) using the resampled data;
           # this should be *identical* to the
           # code you wrote for q3
@@ -302,7 +302,7 @@ Compute a CLT-based confidence interval for $\pi$ at the 95% confidence level (`
 
 ```{r q6-task}
 df_q1 %>%
-  mutate(innie = 4*stat(x, y)) %>%  
+  mutate(innie = stat(x, y)) %>%  
   summarize(
     mean = mean(innie),
     sd = sd(innie),
