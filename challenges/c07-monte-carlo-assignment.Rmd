@@ -157,7 +157,7 @@ Answer the questions below.
 ```{r q2-task}
 ## TASK: Finish implementing this function
 stat <- function(x, y) {
-  return(((x^2)+(y^2)) <=1)
+  return(4*(((x^2)+(y^2)) <=1))
   }
 ```
 
@@ -171,7 +171,7 @@ assertthat::assert_that(
    tibble(x = 0.2, y = 0.3) %>% # Pick a point *inside* the circle
     mutate(stat = stat(x, y)) %>% 
     pull(stat) %>% 
-    .[[1]] == 1,
+    .[[1]] == 4,
   # ???, # Write the correct value of stat() here
   msg = "Incorrect value when a point is inside the circle"
 )
@@ -207,7 +207,7 @@ df_q3 <-
   mutate(
     inside = stat(x,y)
   ) %>%
-  summarise(pi_est = 4*mean(inside))
+  summarise(pi_est = mean(inside))
 df_q3
 ```
 
@@ -253,7 +253,7 @@ df_q4 <-
             mutate(
             inside = stat(x,y)
             ) %>%
-            summarise(pi_est = 4*mean(inside)) %>%
+            summarise(pi_est = mean(inside)) %>%
           # Estimate pi (pi_est) using the resampled data;
           # this should be *identical* to the
           # code you wrote for q3
