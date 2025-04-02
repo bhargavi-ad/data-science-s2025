@@ -165,14 +165,15 @@ anti_longer <-
     names_to = "antibiotic",
     values_to = "MIC"
     ) %>%
-    filter(MIC <= 0.1)
+    filter(MIC <= 0.1) %>%
+    mutate(bacteria = fct_reorder(bacteria, MIC))
 
 anti_longer
 ```
 
     ## # A tibble: 19 × 4
     ##    bacteria                        gram     antibiotic     MIC
-    ##    <chr>                           <chr>    <chr>        <dbl>
+    ##    <fct>                           <chr>    <chr>        <dbl>
     ##  1 Brucella abortus                negative neomycin     0.02 
     ##  2 Bacillus anthracis              positive penicillin   0.001
     ##  3 Bacillus anthracis              positive streptomycin 0.01 
@@ -228,11 +229,11 @@ filt_longer <-
     names_to = "antibiotic",
     values_to = "MIC"
     ) %>%
-    filter(MIC < 10)
+  mutate(bacteria = fct_reorder(bacteria, MIC))
 filt_longer %>%
   ggplot(aes(bacteria, antibiotic, size = MIC, color = gram))+
-  geom_point()+
-  scale_size(name = "Size", range = c(2, 12), breaks = c(0.1, 1, 3, 5, 10)) +
+  geom_point(alpha = 0.7) +  # Slight transparency for better visibility
+  scale_size(name = "MIC (log)", range = c(2, 12), trans = "log10") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 ```
 
@@ -254,48 +255,28 @@ your other visuals.
 
 ``` r
 # WRITE YOUR CODE HERE
-strep_longer <-
-  df_antibiotics %>%
-  pivot_longer(
-    cols = c(penicillin, streptomycin, neomycin),
-    names_to = "antibiotic",
-    values_to = "MIC"
-    ) %>%
-    filter(antibiotic == "streptomycin")
-strep_longer
-```
-
-    ## # A tibble: 16 × 4
-    ##    bacteria                        gram     antibiotic     MIC
-    ##    <chr>                           <chr>    <chr>        <dbl>
-    ##  1 Aerobacter aerogenes            negative streptomycin  1   
-    ##  2 Brucella abortus                negative streptomycin  2   
-    ##  3 Bacillus anthracis              positive streptomycin  0.01
-    ##  4 Diplococcus pneumonia           positive streptomycin 11   
-    ##  5 Escherichia coli                negative streptomycin  0.4 
-    ##  6 Klebsiella pneumoniae           negative streptomycin  1.2 
-    ##  7 Mycobacterium tuberculosis      negative streptomycin  5   
-    ##  8 Proteus vulgaris                negative streptomycin  0.1 
-    ##  9 Pseudomonas aeruginosa          negative streptomycin  2   
-    ## 10 Salmonella (Eberthella) typhosa negative streptomycin  0.4 
-    ## 11 Salmonella schottmuelleri       negative streptomycin  0.8 
-    ## 12 Staphylococcus albus            positive streptomycin  0.1 
-    ## 13 Staphylococcus aureus           positive streptomycin  0.03
-    ## 14 Streptococcus fecalis           positive streptomycin  1   
-    ## 15 Streptococcus hemolyticus       positive streptomycin 14   
-    ## 16 Streptococcus viridans          positive streptomycin 10
-
-``` r
-ggplot(strep_longer, aes(bacteria, MIC, color = gram)) +
+ggplot(df_antibiotics, aes(penicillin, streptomycin, color = gram, label = bacteria)) +
   geom_point() +
-   geom_hline(
-    yintercept = 0.1,
-    linetype = "dashed"
-  ) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+  geom_text_repel(vjust = 1.75, size = 3.5) +
+  scale_y_log10() +
+  scale_x_log10()
 ```
 
 ![](c05-antibiotics-assignment_files/figure-gfm/q1.3-1.png)<!-- -->
+
+``` r
+# ggplot() +
+#   geom_point(strep_longer, aes(,, color = gram))
+#   
+  
+  
+  # geom_point() +
+  #  geom_hline(
+  #   yintercept = 0.1,
+  #   linetype = "dashed"
+  # ) +
+  # theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+```
 
 #### Visual 4 (Some variables)
 
@@ -308,6 +289,30 @@ your other visuals.
 
 ``` r
 # WRITE YOUR CODE HERE
+df_antibiotics
+```
+
+    ## # A tibble: 16 × 5
+    ##    bacteria                        penicillin streptomycin neomycin gram    
+    ##    <chr>                                <dbl>        <dbl>    <dbl> <chr>   
+    ##  1 Aerobacter aerogenes               870             1       1.6   negative
+    ##  2 Brucella abortus                     1             2       0.02  negative
+    ##  3 Bacillus anthracis                   0.001         0.01    0.007 positive
+    ##  4 Diplococcus pneumonia                0.005        11      10     positive
+    ##  5 Escherichia coli                   100             0.4     0.1   negative
+    ##  6 Klebsiella pneumoniae              850             1.2     1     negative
+    ##  7 Mycobacterium tuberculosis         800             5       2     negative
+    ##  8 Proteus vulgaris                     3             0.1     0.1   negative
+    ##  9 Pseudomonas aeruginosa             850             2       0.4   negative
+    ## 10 Salmonella (Eberthella) typhosa      1             0.4     0.008 negative
+    ## 11 Salmonella schottmuelleri           10             0.8     0.09  negative
+    ## 12 Staphylococcus albus                 0.007         0.1     0.001 positive
+    ## 13 Staphylococcus aureus                0.03          0.03    0.001 positive
+    ## 14 Streptococcus fecalis                1             1       0.1   positive
+    ## 15 Streptococcus hemolyticus            0.001        14      10     positive
+    ## 16 Streptococcus viridans               0.005        10      40     positive
+
+``` r
 pen_longer <-
   df_antibiotics %>%
   pivot_longer(
@@ -315,9 +320,28 @@ pen_longer <-
     names_to = "antibiotic",
     values_to = "MIC"
     ) %>%
-    filter(antibiotic == "penicillin")
+    #filter(antibiotic == "penicillin") %>%
+  mutate(bacteria = fct_reorder(bacteria, MIC))
+pen_longer
+```
 
-ggplot(pen_longer, aes(bacteria, MIC, color = gram)) +
+    ## # A tibble: 48 × 4
+    ##    bacteria              gram     antibiotic       MIC
+    ##    <fct>                 <chr>    <chr>          <dbl>
+    ##  1 Aerobacter aerogenes  negative penicillin   870    
+    ##  2 Aerobacter aerogenes  negative streptomycin   1    
+    ##  3 Aerobacter aerogenes  negative neomycin       1.6  
+    ##  4 Brucella abortus      negative penicillin     1    
+    ##  5 Brucella abortus      negative streptomycin   2    
+    ##  6 Brucella abortus      negative neomycin       0.02 
+    ##  7 Bacillus anthracis    positive penicillin     0.001
+    ##  8 Bacillus anthracis    positive streptomycin   0.01 
+    ##  9 Bacillus anthracis    positive neomycin       0.007
+    ## 10 Diplococcus pneumonia positive penicillin     0.005
+    ## # ℹ 38 more rows
+
+``` r
+ggplot(pen_longer, aes(bacteria, MIC, color = antibiotic)) +
   geom_point() +
    geom_hline(
     yintercept = 0.1,
@@ -340,18 +364,47 @@ your other visuals.
 
 ``` r
 # WRITE YOUR CODE HERE
+
 full_longer <-
   df_antibiotics %>%
   pivot_longer(
     cols = c(penicillin, streptomycin, neomycin),
     names_to = "antibiotic",
-    values_to = "MIC")
-ggplot(full_longer, aes(bacteria, gram)) +
-  geom_point(aes(size = after_stat(n)), stat = "sum")+
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+    values_to = "MIC") %>%
+  mutate(
+    bacteria = fct_reorder(bacteria, MIC),
+    at_most_0.1 = MIC <= 0.1
+         )
+full_longer
+```
+
+    ## # A tibble: 48 × 5
+    ##    bacteria              gram     antibiotic       MIC at_most_0.1
+    ##    <fct>                 <chr>    <chr>          <dbl> <lgl>      
+    ##  1 Aerobacter aerogenes  negative penicillin   870     FALSE      
+    ##  2 Aerobacter aerogenes  negative streptomycin   1     FALSE      
+    ##  3 Aerobacter aerogenes  negative neomycin       1.6   FALSE      
+    ##  4 Brucella abortus      negative penicillin     1     FALSE      
+    ##  5 Brucella abortus      negative streptomycin   2     FALSE      
+    ##  6 Brucella abortus      negative neomycin       0.02  TRUE       
+    ##  7 Bacillus anthracis    positive penicillin     0.001 TRUE       
+    ##  8 Bacillus anthracis    positive streptomycin   0.01  TRUE       
+    ##  9 Bacillus anthracis    positive neomycin       0.007 TRUE       
+    ## 10 Diplococcus pneumonia positive penicillin     0.005 TRUE       
+    ## # ℹ 38 more rows
+
+``` r
+ggplot(full_longer, aes(bacteria, antibiotic, color=gram, alpha = at_most_0.1)) +
+  geom_point(size = 5) +
+  theme(axis.text.x = element_text(angle = 65, vjust = 1, hjust = 1)) +
+  scale_alpha_manual(values = c("FALSE" = 0.2, "TRUE" = 1)) 
 ```
 
 ![](c05-antibiotics-assignment_files/figure-gfm/q1.5-1.png)<!-- -->
+
+``` r
+# facet wrap 3 graphs one for each drug and all antibiotics on each graph, transparency of each dot is whether it is below 0.1
+```
 
 ### **q2** Assess your visuals
 
@@ -403,21 +456,24 @@ and in 1984 *Streptococcus fecalis* was renamed *Enterococcus fecalis*
 
 - Diplococcus pneumoniae was renamed Streptococcus pneumoniae because
   Diplococcus pneumoniae’s response to antibiotics mirrored the response
-  of both streptococcus hemolyticus and streptococcus viridans. All
-  three were only effectively treated by penicillin and their MIC values
-  remained in the same range almost close to 0.
+  of both streptococcus hemolyticus and streptococcus viridans.
 
 - Which of your visuals above (1 through 5) is **most effective** at
   helping to answer this question? - (Write your response here) - Why? -
   (Write your response here)
 
-- While Visualization 1 shows the MIC values that all three bacteria
-  have against penicillin, Visualization 2 very clearly visually shows
-  the pattern that those three bacteria are the only bacteria that can
-  only be responded to with penicillin. I believe that is because of how
-  intuitively visual the bubble graph is. It makes it easy to see
-  patterns in size and location across the plot with the sacrifice of
-  having exact numerical values.
+- Visualization 4 is most effective at helping to answer this question
+  because it shows the MIC values in response to all three antibiotics
+  for each bacteria. In visualization 3 we can see some clustering
+  occurring between the three bacteria, meaning that they have similar
+  responses to both penicillin and streptomycin. However, Visualization
+  4 shows us that the three bacteria also have fairly similar responses
+  to neomycin, with *Diplococcus pneumoniae* and streptococcus
+  hemolyticus having almost the same MIC values and streptococcus
+  viridans having a slightly higher MIC value. Also, because the x-axis
+  is ordered by increasing MIC we see that those three bacteria have
+  ended up next to each other because they are the closest in ascending
+  order compared to the other bacteria.
 
 # References
 

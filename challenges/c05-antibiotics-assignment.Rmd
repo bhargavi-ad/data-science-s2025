@@ -126,7 +126,8 @@ anti_longer <-
     names_to = "antibiotic",
     values_to = "MIC"
     ) %>%
-    filter(MIC <= 0.1)
+    filter(MIC <= 0.1) %>%
+    mutate(bacteria = fct_reorder(bacteria, MIC))
 
 anti_longer
 all_bar_chart <-
@@ -162,11 +163,11 @@ filt_longer <-
     names_to = "antibiotic",
     values_to = "MIC"
     ) %>%
-    filter(MIC < 10)
+  mutate(bacteria = fct_reorder(bacteria, MIC))
 filt_longer %>%
   ggplot(aes(bacteria, antibiotic, size = MIC, color = gram))+
-  geom_point()+
-  scale_size(name = "Size", range = c(2, 12), breaks = c(0.1, 1, 3, 5, 10)) +
+  geom_point(alpha = 0.7) +  # Slight transparency for better visibility
+  scale_size(name = "MIC (log)", range = c(2, 12), trans = "log10") +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
   
   
@@ -188,22 +189,23 @@ your other visuals.
 
 ```{r q1.3}
 # WRITE YOUR CODE HERE
-strep_longer <-
-  df_antibiotics %>%
-  pivot_longer(
-    cols = c(penicillin, streptomycin, neomycin),
-    names_to = "antibiotic",
-    values_to = "MIC"
-    ) %>%
-    filter(antibiotic == "streptomycin")
-strep_longer
-ggplot(strep_longer, aes(bacteria, MIC, color = gram)) +
+ggplot(df_antibiotics, aes(penicillin, streptomycin, color = gram, label = bacteria)) +
   geom_point() +
-   geom_hline(
-    yintercept = 0.1,
-    linetype = "dashed"
-  ) +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+  geom_text_repel(vjust = 1.75, size = 3.5) +
+  scale_y_log10() +
+  scale_x_log10()
+  
+# ggplot() +
+#   geom_point(strep_longer, aes(,, color = gram))
+#   
+  
+  
+  # geom_point() +
+  #  geom_hline(
+  #   yintercept = 0.1,
+  #   linetype = "dashed"
+  # ) +
+  # theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 ```
 
 #### Visual 4 (Some variables)
@@ -217,6 +219,7 @@ your other visuals.
 
 ```{r q1.4}
 # WRITE YOUR CODE HERE
+df_antibiotics
 pen_longer <-
   df_antibiotics %>%
   pivot_longer(
@@ -224,9 +227,10 @@ pen_longer <-
     names_to = "antibiotic",
     values_to = "MIC"
     ) %>%
-    filter(antibiotic == "penicillin")
-
-ggplot(pen_longer, aes(bacteria, MIC, color = gram)) +
+    #filter(antibiotic == "penicillin") %>%
+  mutate(bacteria = fct_reorder(bacteria, MIC))
+pen_longer
+ggplot(pen_longer, aes(bacteria, MIC, color = antibiotic)) +
   geom_point() +
    geom_hline(
     yintercept = 0.1,
@@ -247,15 +251,24 @@ your other visuals.
 
 ```{r q1.5}
 # WRITE YOUR CODE HERE
+
 full_longer <-
   df_antibiotics %>%
   pivot_longer(
     cols = c(penicillin, streptomycin, neomycin),
     names_to = "antibiotic",
-    values_to = "MIC")
-ggplot(full_longer, aes(bacteria, gram)) +
-  geom_point(aes(size = after_stat(n)), stat = "sum")+
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+    values_to = "MIC") %>%
+  mutate(
+    bacteria = fct_reorder(bacteria, MIC),
+    at_most_0.1 = MIC <= 0.1
+         )
+full_longer
+ggplot(full_longer, aes(bacteria, antibiotic, color=gram, alpha = at_most_0.1)) +
+  geom_point(size = 5) +
+  theme(axis.text.x = element_text(angle = 65, vjust = 1, hjust = 1)) +
+  scale_alpha_manual(values = c("FALSE" = 0.2, "TRUE" = 1)) 
+
+# facet wrap 3 graphs one for each drug and all antibiotics on each graph, transparency of each dot is whether it is below 0.1
 
 ```
 
@@ -310,20 +323,24 @@ and in 1984 *Streptococcus fecalis* was renamed *Enterococcus fecalis*
 -   Diplococcus pneumoniae was renamed Streptococcus pneumoniae because
     Diplococcus pneumoniae's response to antibiotics mirrored the
     response of both streptococcus hemolyticus and streptococcus
-    viridans. All three were only effectively treated by penicillin and
-    their MIC values remained in the same range almost close to 0.
+    viridans.
 
- - Which of your visuals above (1 through 5) is **most effective** at
-helping to answer this question? - (Write your response here) - Why? -
-(Write your response here)
+-   Which of your visuals above (1 through 5) is **most effective** at
+    helping to answer this question? - (Write your response here) -
+    Why? - (Write your response here)
 
--   While Visualization 1 shows the MIC values that all three bacteria
-    have against penicillin, Visualization 2 very clearly visually shows
-    the pattern that those three bacteria are the only bacteria that can
-    only be responded to with penicillin. I believe that is because of
-    how intuitively visual the bubble graph is. It makes it easy to see
-    patterns in size and location across the plot with the sacrifice of
-    having exact numerical values.
+-   Visualization 4 is most effective at helping to answer this question
+    because it shows the MIC values in response to all three antibiotics
+    for each bacteria. In visualization 3 we can see some clustering
+    occurring between the three bacteria, meaning that they have similar
+    responses to both penicillin and streptomycin. However,
+    Visualization 4 shows us that the three bacteria also have fairly
+    similar responses to neomycin, with *Diplococcus pneumoniae* and
+    streptococcus hemolyticus having almost the same MIC values and
+    streptococcus viridans having a slightly higher MIC value. Also,
+    because the x-axis is ordered by increasing MIC we see that those
+    three bacteria have ended up next to each other because they are the
+    closest in ascending order compared to the other bacteria.
 
 # References
 
