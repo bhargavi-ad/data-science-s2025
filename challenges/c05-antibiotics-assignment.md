@@ -255,7 +255,8 @@ your other visuals.
 
 ``` r
 # WRITE YOUR CODE HERE
-ggplot(df_antibiotics, aes(penicillin, streptomycin, color = gram, label = bacteria)) +
+df_antibiotics %>%
+ggplot(aes(penicillin, streptomycin, color = gram, label = bacteria)) +
   geom_point() +
   geom_text_repel(vjust = 1.75, size = 3.5) +
   scale_y_log10() +
@@ -263,20 +264,6 @@ ggplot(df_antibiotics, aes(penicillin, streptomycin, color = gram, label = bacte
 ```
 
 ![](c05-antibiotics-assignment_files/figure-gfm/q1.3-1.png)<!-- -->
-
-``` r
-# ggplot() +
-#   geom_point(strep_longer, aes(,, color = gram))
-#   
-  
-  
-  # geom_point() +
-  #  geom_hline(
-  #   yintercept = 0.1,
-  #   linetype = "dashed"
-  # ) +
-  # theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
-```
 
 #### Visual 4 (Some variables)
 
@@ -322,26 +309,9 @@ pen_longer <-
     ) %>%
     #filter(antibiotic == "penicillin") %>%
   mutate(bacteria = fct_reorder(bacteria, MIC))
-pen_longer
-```
 
-    ## # A tibble: 48 × 4
-    ##    bacteria              gram     antibiotic       MIC
-    ##    <fct>                 <chr>    <chr>          <dbl>
-    ##  1 Aerobacter aerogenes  negative penicillin   870    
-    ##  2 Aerobacter aerogenes  negative streptomycin   1    
-    ##  3 Aerobacter aerogenes  negative neomycin       1.6  
-    ##  4 Brucella abortus      negative penicillin     1    
-    ##  5 Brucella abortus      negative streptomycin   2    
-    ##  6 Brucella abortus      negative neomycin       0.02 
-    ##  7 Bacillus anthracis    positive penicillin     0.001
-    ##  8 Bacillus anthracis    positive streptomycin   0.01 
-    ##  9 Bacillus anthracis    positive neomycin       0.007
-    ## 10 Diplococcus pneumonia positive penicillin     0.005
-    ## # ℹ 38 more rows
-
-``` r
-ggplot(pen_longer, aes(bacteria, MIC, color = antibiotic)) +
+pen_longer %>%
+  ggplot(aes(bacteria, MIC, color = antibiotic)) +
   geom_point() +
    geom_hline(
     yintercept = 0.1,
@@ -375,26 +345,9 @@ full_longer <-
     bacteria = fct_reorder(bacteria, MIC),
     at_most_0.1 = MIC <= 0.1
          )
-full_longer
-```
-
-    ## # A tibble: 48 × 5
-    ##    bacteria              gram     antibiotic       MIC at_most_0.1
-    ##    <fct>                 <chr>    <chr>          <dbl> <lgl>      
-    ##  1 Aerobacter aerogenes  negative penicillin   870     FALSE      
-    ##  2 Aerobacter aerogenes  negative streptomycin   1     FALSE      
-    ##  3 Aerobacter aerogenes  negative neomycin       1.6   FALSE      
-    ##  4 Brucella abortus      negative penicillin     1     FALSE      
-    ##  5 Brucella abortus      negative streptomycin   2     FALSE      
-    ##  6 Brucella abortus      negative neomycin       0.02  TRUE       
-    ##  7 Bacillus anthracis    positive penicillin     0.001 TRUE       
-    ##  8 Bacillus anthracis    positive streptomycin   0.01  TRUE       
-    ##  9 Bacillus anthracis    positive neomycin       0.007 TRUE       
-    ## 10 Diplococcus pneumonia positive penicillin     0.005 TRUE       
-    ## # ℹ 38 more rows
-
-``` r
-ggplot(full_longer, aes(bacteria, antibiotic, color=gram, alpha = at_most_0.1)) +
+full_longer %>%
+  
+ggplot(aes(bacteria, antibiotic, color=gram, alpha = at_most_0.1)) +
   geom_point(size = 5) +
   theme(axis.text.x = element_text(angle = 65, vjust = 1, hjust = 1)) +
   scale_alpha_manual(values = c("FALSE" = 0.2, "TRUE" = 1)) 
