@@ -130,11 +130,16 @@ you still need to count, because your numbers *will* be different!
   - 97.1%
 - Are there any sources of *real* uncertainty in the percent occupied
   you calculated?
-  - No because I counted the entire population of the houses in Helvig
-    not a sample of them
+  - Yes there are sources of real uncertainty because residents of
+    Helvig are moving often and thus counting the number of unoccupied
+    homes could change from one day to the next. The number would then
+    not be accurate all the time.
 - Are there any sources of *erroneous* uncertainty in the percent
   occupied you calculated?
-  - Maybe, because the number of unoccupied houses is changing often
+  - No, I re-counted and double checked at the same time with another
+    student looking at the same population. The only error could have
+    occurred if I had miscounted a home when going though the islands
+    page.
 
 Zach looked at the first 25 homes in Helvig and recorded the `age` and
 `name` of every person in those homes. These people are provided in
@@ -199,7 +204,7 @@ df_q3 <-
            sep = " ",
            extra = "merge") %>%
   group_by(last_name) %>%
-  mutate(
+  summarize(
     n=n(),
     p = n/63
   ) %>%
@@ -209,21 +214,20 @@ df_q3 <-
 df_q3
 ```
 
-    ## # A tibble: 63 × 6
-    ## # Groups:   last_name [28]
-    ##    house   age first_name last_name     n      p
-    ##    <dbl> <dbl> <chr>      <chr>     <int>  <dbl>
-    ##  1     5    35 Olson      Sorensen      8 0.127 
-    ##  2    10    37 Lija       Sorensen      8 0.127 
-    ##  3    10    15 Julia      Sorensen      8 0.127 
-    ##  4    10    11 Cariel     Sorensen      8 0.127 
-    ##  5    12    65 Rupert     Sorensen      8 0.127 
-    ##  6    21    61 Selina     Sorensen      8 0.127 
-    ##  7    21    13 Magnar     Sorensen      8 0.127 
-    ##  8    23    62 Raum       Sorensen      8 0.127 
-    ##  9     5    32 Emma       Lund          6 0.0952
-    ## 10     5    12 Erik       Lund          6 0.0952
-    ## # ℹ 53 more rows
+    ## # A tibble: 28 × 3
+    ##    last_name     n      p
+    ##    <chr>     <int>  <dbl>
+    ##  1 Sorensen      8 0.127 
+    ##  2 Lund          6 0.0952
+    ##  3 Solberg       5 0.0794
+    ##  4 Eklund        4 0.0635
+    ##  5 Blomgren      3 0.0476
+    ##  6 Carlsen       3 0.0476
+    ##  7 Jansen        3 0.0476
+    ##  8 Morris        3 0.0476
+    ##  9 Banerjee      2 0.0317
+    ## 10 Chunduri      2 0.0317
+    ## # ℹ 18 more rows
 
 Use the following to check your work.
 
@@ -429,8 +433,13 @@ print("Great work!")
 
 - Which sample—sequential or random—is more *representative* of all
   homes Helvig? Why?
-  - This is random because we didn’t sequentially choose the first 25
-    homes but instead randomly chose 25 homes in Helvig
+  - A random sample is more representative of all homes in Helvig
+  - This is because we don’t know that Helvig residents chose their own
+    randomly and, thus, there could be correlations between the first
+    set of houses that would not be representative of the residents in
+    the last set of houses.
+  - By creating a random sample, we could see a more realistic picture
+    of all of the homes and residents in Helvig
 
 ### **q6** Find common names: Random sample
 
@@ -497,7 +506,7 @@ last name.
 #  (provided in a `name` column), removes any invalid rows, and computes the
 #  proportion of individuals with the user-specified `last` name (returned
 #  in an `estimate` column).
-name_prevalence <- function(df, last = "Collins") {
+name_prevalence <- function(df, last) {
   df %>% 
     ## TODO: Finish this code
     mutate(last_name = str_extract(name, "\\w+$")) %>% 
@@ -582,7 +591,7 @@ df_interval_bootstrap <-
 ## TODO: Finish this code, using the name_prevalence() helper you implemented
 ## HINT: Remember that you need to use analysis() when operating on split_df
         analysis(split_df) %>%
-        name_prevalence()
+        name_prevalence("Collins")
       }
     )
   ) %>% 

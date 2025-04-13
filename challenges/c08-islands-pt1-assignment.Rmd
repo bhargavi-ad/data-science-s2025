@@ -76,9 +76,9 @@ NB. When Zach counted the homes (on 2025-01-08), he found 20 unoccupied out of 5
 -   What percent of homes are *occupied*?
     -   97.1%
 -   Are there any sources of *real* uncertainty in the percent occupied you calculated?
-    -   No because I counted the entire population of the houses in Helvig not a sample of them
+    -   Yes there are sources of real uncertainty because residents of Helvig are moving often and thus counting the number of unoccupied homes could change from one day to the next. The number would then not be accurate all the time.
 -   Are there any sources of *erroneous* uncertainty in the percent occupied you calculated?
-    -   Maybe, because the number of unoccupied houses is changing often
+    -   No, I re-counted and double checked at the same time with another student looking at the same population. The only error could have occurred if I had miscounted a home when going though the islands page.
 
 Zach looked at the first 25 homes in Helvig and recorded the `age` and `name` of every person in those homes. These people are provided in `helvig-seq.csv`.
 
@@ -107,7 +107,7 @@ df_q3 <-
            sep = " ",
            extra = "merge") %>%
   group_by(last_name) %>%
-  mutate(
+  summarize(
     n=n(),
     p = n/63
   ) %>%
@@ -241,7 +241,9 @@ print("Great work!")
 *Observations*
 
 -   Which sample---sequential or random---is more *representative* of all homes Helvig? Why?
-    -   This is random because we didn't sequentially choose the first 25 homes but instead randomly chose 25 homes in Helvig
+    -   A random sample is more representative of all homes in Helvig
+    -   This is because we don't know that Helvig residents chose their own randomly and, thus, there could be correlations between the first set of houses that would not be representative of the residents in the last set of houses.
+    -   By creating a random sample, we could see a more realistic picture of all of the homes and residents in Helvig
 
 ### **q6** Find common names: Random sample
 
@@ -276,7 +278,7 @@ Complete the code below to write a helper function. Your function will compute t
 #  (provided in a `name` column), removes any invalid rows, and computes the
 #  proportion of individuals with the user-specified `last` name (returned
 #  in an `estimate` column).
-name_prevalence <- function(df, last = "Collins") {
+name_prevalence <- function(df, last) {
   df %>% 
     ## TODO: Finish this code
     mutate(last_name = str_extract(name, "\\w+$")) %>% 
@@ -345,7 +347,7 @@ df_interval_bootstrap <-
 ## TODO: Finish this code, using the name_prevalence() helper you implemented
 ## HINT: Remember that you need to use analysis() when operating on split_df
         analysis(split_df) %>%
-        name_prevalence()
+        name_prevalence("Collins")
       }
     )
   ) %>% 
