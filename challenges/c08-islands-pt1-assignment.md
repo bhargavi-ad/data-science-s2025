@@ -136,10 +136,9 @@ you still need to count, because your numbers *will* be different!
     not be accurate all the time.
 - Are there any sources of *erroneous* uncertainty in the percent
   occupied you calculated?
-  - No, I re-counted and double checked at the same time with another
-    student looking at the same population. The only error could have
-    occurred if I had miscounted a home when going though the islands
-    page.
+  - Yes, because human error is always a thing and I could have
+    miscounted a home when going though the islands page or mistyped a
+    value for a home.
 
 Zach looked at the first 25 homes in Helvig and recorded the `age` and
 `name` of every person in those homes. These people are provided in

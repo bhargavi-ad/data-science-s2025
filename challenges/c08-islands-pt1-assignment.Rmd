@@ -78,7 +78,7 @@ NB. When Zach counted the homes (on 2025-01-08), he found 20 unoccupied out of 5
 -   Are there any sources of *real* uncertainty in the percent occupied you calculated?
     -   Yes there are sources of real uncertainty because residents of Helvig are moving often and thus counting the number of unoccupied homes could change from one day to the next. The number would then not be accurate all the time.
 -   Are there any sources of *erroneous* uncertainty in the percent occupied you calculated?
-    -   No, I re-counted and double checked at the same time with another student looking at the same population. The only error could have occurred if I had miscounted a home when going though the islands page.
+    -   Yes, because human error is always a thing and I could have miscounted a home when going though the islands page or mistyped a value for a home.
 
 Zach looked at the first 25 homes in Helvig and recorded the `age` and `name` of every person in those homes. These people are provided in `helvig-seq.csv`.
 
