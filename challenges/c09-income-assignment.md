@@ -550,17 +550,22 @@ df_data %>%
     population increases the standard error decreases
   - This trend exists because the larger the population that the
     standard error is being derived from, the closer the estimated
-    median is because the variability is decreased. This is also backed
-    up by the central limit theorem which says that the standard error
-    will decrease as the sample size, in this case the population,
-    increases.
+    median is because the variability is decreased. This is because the
+    sample size is dependent on the population size, therefore, the
+    larger the population is the larger the sample size will be. This is
+    also backed up by the central limit theorem which says that the
+    standard error will decrease as the sample size, in this case the
+    population, increases.
 - What does this *overall* trend tell you about the relative ease of
   studying small vs large counties?
   - Assuming you have sufficient data for both counties, it would be
     easier to study a larger county because the estimates would be
-    closer to the true values with slimmer intervals of error. This
-    means that conclusions can be made with more confidence since the
-    intervals will narrow in the true value much more effectively.
+    closer to the true values with slimmer intervals of error. This is
+    because when the sample size is depedent on the population size, as
+    long as the sample size is reasonable to achieve, the larger sample
+    size will be more beneficial. This means that conclusions can be
+    made with more confidence since the intervals will narrow in the
+    true value much more effectively.
 
 # Going Further
 
@@ -607,7 +612,7 @@ df_q8 %>%
   estimate of that county across the different family sizes
 - Los Angeles county is the most populous county in the United States
   and the error bars for the county are the smallest by far, nearly
-  overlapping with the point iteself for every category.
+  overlapping with the point itself for every category.
 - I think it’s interesting that Norfolk County has a noticeably larger
   income per household than all the other counties in California for all
   households except 7 or more persons. Both Massachusetts and California
