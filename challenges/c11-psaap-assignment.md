@@ -230,7 +230,7 @@ of fluid, for different experimental settings (e.g. different dimensions
 ##       each identified by different values of idx
 df_psaap %>%
   ggplot(aes(x, T_norm)) +
-  geom_point() 
+  geom_line(aes(group = idx))
 ```
 
 ![](c11-psaap-assignment_files/figure-gfm/q2-task-1.png)<!-- -->
@@ -399,12 +399,16 @@ summary(fit_q4)
   - T_f has a regression coefficient of -0.0003791
 - What is the standard deviation of `x` in `df_psaap`? What about the
   standard deviation of `T_f`?
-  - standard deviation of x is 0.05697
-  - standard deviation of T_f is 0.001173
+  - SD = SE\*sqrt(n)
+    - standard deviation of x is 0.674
+    - standard deviation of T_f is 0.01388
 - How do these standard deviations relate to the regression coefficients
   for `x` and `T_f`?
-  - The lower regression coefficient has a lower standard deviation when
-    comparing x and T_f
+  - Multiplying the regression coefficient and the standard deviation
+    for each variable tells us how much the output varies in response to
+    the input
+  - For x it would be 0.674\*1.018 = 0.686
+  - For T_f it would be -0.00000526
 - Note that literally *all* of the inputs above have *some* effect on
   the output `T_norm`; so they are all “significant” in that sense. What
   does this tell us about the limitations of statistical significance
@@ -641,13 +645,14 @@ pr_level <- 0.8
 
 fit_q6 <- 
   df_psaap %>% 
-  lm(formula = T_norm ~ . - idx - avg_q - avg_T - rms_T - x - L - U_0)
+  lm(formula = T_norm ~ . - idx - avg_q - avg_T - rms_T - x - L - U_0 - W)
 
 uncer_pred <-
   df_psaap %>%
     add_uncertainties(model = fit_q6, level = pr_level, interval = "prediction", prefix = "pi") %>%
   select(T_norm, pi_lwr, pi_fit, pi_upr) %>%
   mutate(source = "prediction")
+
 
 df_valid <-
   df_validate %>%
@@ -676,11 +681,46 @@ validd <-
   pull(in_interval) %>%
   mean()
 
+overall_range <- 
+  uncer_pred %>%
+  summarise(
+    overall_lwr = min(pi_lwr),
+    overall_upr = max(pi_upr)
+  ) %>%
+  mutate(overall_range = overall_upr - overall_lwr)
 
+overall_range
+```
+
+    ## # A tibble: 1 × 3
+    ##   overall_lwr overall_upr overall_range
+    ##         <dbl>       <dbl>         <dbl>
+    ## 1      -0.329        1.86          2.19
+
+``` r
+df_valid
+```
+
+    ## # A tibble: 60 × 5
+    ##    T_norm  pi_lwr pi_fit pi_upr source    
+    ##     <dbl>   <dbl>  <dbl>  <dbl> <chr>     
+    ##  1  0.345  0.0708  0.581  1.09  validation
+    ##  2  0.325  0.204   0.702  1.20  validation
+    ##  3  0.416  0.249   0.759  1.27  validation
+    ##  4  0.122 -0.329   0.173  0.675 validation
+    ##  5  0.526  0.156   0.662  1.17  validation
+    ##  6  0.193  0.272   0.774  1.28  validation
+    ##  7  0.262  0.440   0.938  1.44  validation
+    ##  8  0.392  0.280   0.784  1.29  validation
+    ##  9  0.144 -0.0344  0.477  0.989 validation
+    ## 10  0.194 -0.0113  0.499  1.01  validation
+    ## # ℹ 50 more rows
+
+``` r
 validd
 ```
 
-    ## [1] 0.8333333
+    ## [1] 0.8666667
 
 **Recommendation**:
 
@@ -702,7 +742,8 @@ validd
   - This is above the pr_level which is good
 - What interval for `T_norm` would you recommend the design team to plan
   around?
-  - 0-1.7
+  - -0.329 - 1.8639
+  - With 0.8 confidence the value of T_norm would fall in this interval
 - Are there any other recommendations you would provide?
   - It would best to test this against further validation data
     considering this is just one instance of values that could occur.
