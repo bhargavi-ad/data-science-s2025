@@ -222,11 +222,11 @@ unc_tib
 **Observations**:
 
 - What are the unique values for `subject_race`?
-  - white, hispanic, black, asian/pacific islander other, unknown
+  - white, hispanic, black, asian/pacific islander, other, unknown, NA
 - What are the unique values for `raw_Race`?
   - White, Hispanic, Black, Asian or Pacific Islander, Middle Eastern or
     East Indian (South Asia), None-for no operator present citations
-    only, A
+    only, A, NA
 - What is the overlap between the two sets?
   - White, Hispanic, Black, Asian/Pacific Islander
 - What is the difference between the two sets?
@@ -499,7 +499,7 @@ fit_q6 %>% tidy()
 **Observations**:
 
 - Which `subject_race` levels are included in fitting the model?
-  - Hispanic, White
+  - Hispanic, White, Black
 - Which `subject_race` levels have terms in the model?
   - Hispanic and White
 
@@ -561,7 +561,9 @@ fit_q7 %>% tidy()
 
 - Which `subject_race` level has the highest probability of being
   arrested, according to this model? Which has the lowest probability?
-  - Hispanic
+  - Hispanic has the highest probability
+  - White has the lowest probability, because both Black and Hispanic
+    have a positive estimate when compared to White
 - What could explain this difference in probabilities of arrest across
   race? List **multiple** possibilities.
   - Systemic Racism
